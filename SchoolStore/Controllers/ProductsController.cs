@@ -3,71 +3,61 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using SchoolStore.Models;
+using System.Data.SqlClient;
 
 namespace SchoolStore.Controllers
 {
     public class ProductsController : Controller
     {
-        public IActionResult Index(int? id=1)
+        private ConnectionStrings _connectionStrings;
+
+        public ProductsController
+            (IOptions<ConnectionStrings> connectionStrings)
         {
-            Models.ProductsViewModel model = new Models.ProductsViewModel();
+            _connectionStrings = connectionStrings.Value;
+        }
 
 
+        public IActionResult Index(int id=1)
+        {
+            ProductsViewModel model = new ProductsViewModel();
 
-            string connectionString = @"Data Source = (localdb)\MSSQLLocalDB; Initial Catalog = JimTest; Integrated Security = True; Connect Timeout = 30; Encrypt = False; TrustServerCertificate = True; ApplicationIntent = ReadWrite; MultiSubnetFailover = False";
-            var connection = new System.Data.SqlClient.SqlConnection(connectionString);
-
-            connection.Open();
-            var command = connection.CreateCommand();
-            command.CommandText = "SELECT * FROM Products WHERE PRODUCTID = " + id.Value;
-            var reader = command.ExecuteReader();
-            var idColumn = reader.GetOrdinal("ProductID");
-            var nameColumn = reader.GetOrdinal("ProductName");
-            var priceColumn = reader.GetOrdinal("Price");
-            var sizeColumn = reader.GetOrdinal("ProductSize");
-            var descriptionColumn = reader.GetOrdinal("ProductDescription");
-            var imageUrlColumn = reader.GetOrdinal("ImageUrl");
-            var colorColumn = reader.GetOrdinal("ProductColor");
-            while (reader.Read())
+            using (var connection = new SqlConnection(_connectionStrings.DefaultConnection))
             {
-                model.Id = reader.GetInt32(idColumn);
-                model.ProductName = reader.GetString(nameColumn);   //I can see name is the second column in the database.
-                model.Price = reader.GetDecimal(priceColumn);
-                model.ProductColor = reader.GetString(colorColumn);
-                model.ProductSize = reader.GetString(sizeColumn);
-                model.ProductDescription = reader.GetString(descriptionColumn);
-                model.ImageUrl = reader.GetString(imageUrlColumn);
+
+                connection.Open();
+                var command = connection.CreateCommand();
+
+                //added stored procedure to prevent injection attacks
+                command.CommandText = "sp_GetProduct";
+                command.Parameters.AddWithValue("@id", id);
+                command.CommandType = System.Data.CommandType.StoredProcedure;
+
+                using (var reader = command.ExecuteReader())
+                {
+                    var idColumn = reader.GetOrdinal("ProductID");
+                    var nameColumn = reader.GetOrdinal("ProductName");
+                    var priceColumn = reader.GetOrdinal("Price");
+                    var sizeColumn = reader.GetOrdinal("ProductSize");
+                    var descriptionColumn = reader.GetOrdinal("ProductDescription");
+                    var imageUrlColumn = reader.GetOrdinal("ImageUrl");
+                    var colorColumn = reader.GetOrdinal("ProductColor");
+                    while (reader.Read())
+                    {
+                        model.Id = reader.GetInt32(idColumn);
+                        model.ProductName = reader.IsDBNull(nameColumn) ? "" : reader.GetString(nameColumn);   //well written ADO code tests for nulls
+                        model.Price = reader.IsDBNull(priceColumn) ? 0m : reader.GetDecimal(priceColumn);
+                        model.ProductColor = reader.GetString(colorColumn);
+                        model.ProductSize = reader.GetString(sizeColumn);
+                        model.ProductDescription = reader.GetString(descriptionColumn);
+                        model.ImageUrl = reader.GetString(imageUrlColumn);
+                    }
+                }
+                connection.Close();
             }
 
-            //model.Name = "Albert";
-            //model.Price = 299.99m;
-            //model.DietaryRequirements = "Grass, Hay, Carrots, Cap'n Crunch";
-            //model.Description = "Albert is an absolutely perfect Alpaca";
-            //model.Age = 4;
-            //model.Temperment = "Pleasant";
-            //model.ImageUrl = "/images/alpaca1.jpg";
-
-            connection.Close();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            connection.Open();
-
-
-
-            connection.Close();
             return View(model);
 
         }

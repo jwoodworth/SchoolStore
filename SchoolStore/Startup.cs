@@ -32,12 +32,20 @@ namespace SchoolStore
             services.AddAntiforgery();
             services.AddSession();
 
+            services.Configure<Models.ConnectionStrings>(Configuration.GetSection("ConnectionStrings"));
+            services.AddOptions();
+
             //for Identity Framework stuff
-            services.AddDbContext<IdentityDbContext>(opt =>
+
+            services.AddDbContext<IdentityDbContext>(
+             opt => opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            //Old HArdcoded way to handle Identity Framework EF
+            // services.AddDbContext<IdentityDbContext>(opt =>
             //opt.UseInMemoryDatabase("Identities"));
-            opt.UseSqlServer("Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = JimTest; Integrated Security = True; Connect Timeout = 30; Encrypt = False; TrustServerCertificate = True; ApplicationIntent = ReadWrite; MultiSubnetFailover = False",
-            sqlOptions => sqlOptions.MigrationsAssembly(this.GetType().Assembly.FullName))
-            );
+            //opt.UseSqlServer("Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = JimTest; Integrated Security = True; Connect Timeout = 30; Encrypt = False; TrustServerCertificate = True; ApplicationIntent = ReadWrite; MultiSubnetFailover = False",
+            //sqlOptions => sqlOptions.MigrationsAssembly(this.GetType().Assembly.FullName))
+            //);
 
 
             services.AddIdentity<IdentityUser, IdentityRole>()
