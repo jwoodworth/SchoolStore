@@ -11,56 +11,59 @@ namespace SchoolStore.Controllers
 {
     public class ProductsController : Controller
     {
-        private ConnectionStrings _connectionStrings;
+        //private ConnectionStrings _connectionStrings;
+        private JimTestContext _context;
 
-        public ProductsController
-            (IOptions<ConnectionStrings> connectionStrings)
+        public ProductsController(JimTestContext context)
         {
-            _connectionStrings = connectionStrings.Value;
+            _context = context;
         }
 
 
-        public IActionResult Index(int id=1)
+        public IActionResult Index(int id = 1)
         {
-            ProductsViewModel model = new ProductsViewModel();
+            //ProductsViewModel model = new ProductsViewModel();
 
-            using (var connection = new SqlConnection(_connectionStrings.DefaultConnection))
-            {
-
-                connection.Open();
-                var command = connection.CreateCommand();
-
-                //added stored procedure to prevent injection attacks
-                command.CommandText = "sp_GetProduct";
-                command.Parameters.AddWithValue("@id", id);
-                command.CommandType = System.Data.CommandType.StoredProcedure;
-
-                using (var reader = command.ExecuteReader())
-                {
-                    var idColumn = reader.GetOrdinal("ProductID");
-                    var nameColumn = reader.GetOrdinal("ProductName");
-                    var priceColumn = reader.GetOrdinal("Price");
-                    var sizeColumn = reader.GetOrdinal("ProductSize");
-                    var descriptionColumn = reader.GetOrdinal("ProductDescription");
-                    var imageUrlColumn = reader.GetOrdinal("ImageUrl");
-                    var colorColumn = reader.GetOrdinal("ProductColor");
-                    while (reader.Read())
-                    {
-                        model.Id = reader.GetInt32(idColumn);
-                        model.ProductName = reader.IsDBNull(nameColumn) ? "" : reader.GetString(nameColumn);   //well written ADO code tests for nulls
-                        model.Price = reader.IsDBNull(priceColumn) ? 0m : reader.GetDecimal(priceColumn);
-                        model.ProductColor = reader.GetString(colorColumn);
-                        model.ProductSize = reader.GetString(sizeColumn);
-                        model.ProductDescription = reader.GetString(descriptionColumn);
-                        model.ImageUrl = reader.GetString(imageUrlColumn);
-                    }
-                }
-                connection.Close();
-            }
-
-            return View(model);
-
+            var product = _context.Products.Find(id);
+            return View(product);
         }
+        //    using (var connection = new SqlConnection(_connectionStrings.DefaultConnection))
+        //    {
+
+        //        connection.Open();
+        //        var command = connection.CreateCommand();
+
+        //        //added stored procedure to prevent injection attacks
+        //        command.CommandText = "sp_GetProduct";
+        //        command.Parameters.AddWithValue("@id", id);
+        //        command.CommandType = System.Data.CommandType.StoredProcedure;
+
+        //        using (var reader = command.ExecuteReader())
+        //        {
+        //            var idColumn = reader.GetOrdinal("ProductID");
+        //            var nameColumn = reader.GetOrdinal("ProductName");
+        //            var priceColumn = reader.GetOrdinal("Price");
+        //            var sizeColumn = reader.GetOrdinal("ProductSize");
+        //            var descriptionColumn = reader.GetOrdinal("ProductDescription");
+        //            var imageUrlColumn = reader.GetOrdinal("ImageUrl");
+        //            var colorColumn = reader.GetOrdinal("ProductColor");
+        //            while (reader.Read())
+        //            {
+        //                model.Id = reader.GetInt32(idColumn);
+        //                model.ProductName = reader.IsDBNull(nameColumn) ? "" : reader.GetString(nameColumn);   //well written ADO code tests for nulls
+        //                model.Price = reader.IsDBNull(priceColumn) ? 0m : reader.GetDecimal(priceColumn);
+        //                model.ProductColor = reader.GetString(colorColumn);
+        //                model.ProductSize = reader.GetString(sizeColumn);
+        //                model.ProductDescription = reader.GetString(descriptionColumn);
+        //                model.ImageUrl = reader.GetString(imageUrlColumn);
+        //            }
+        //        }
+        //        connection.Close();
+        //    }
+
+        //    return View(model);
+
+        //}
 
 
 //        [HttpPost]

@@ -1,4 +1,4 @@
-﻿@model SchoolStore.Models.ProductsViewModel
+﻿@model SchoolStore.Models.Products
 @{
     ViewData["Title"] = "Index";
 }
@@ -6,12 +6,13 @@
 <h2>Welcome to The School Store!</h2>
 <div class=row>
     <div class="col-4 image-fluid">
-        <img src="@Model.ImageUrl">
+        @* <img src="@Model.ImageId">   *@
+        <img src="~/images/blackshirt.jpg" />
     </div>
     <div class="col-8">
         <dl>
             <dt>ID Number</dt>
-            <dd>@Model.Id</dd>
+            <dd>@Model.ID</dd>
             <dt>Product Name</dt>
             <dd>@Model.ProductName</dd>
             <dt>Description</dt>

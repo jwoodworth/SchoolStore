@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using SchoolStore.Models;
 
 
 
@@ -37,25 +38,27 @@ namespace SchoolStore
 
             //for Identity Framework stuff
 
-            services.AddDbContext<IdentityDbContext>(
-             opt => opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+
 
             //Old HArdcoded way to handle Identity Framework EF
-            // services.AddDbContext<IdentityDbContext>(opt =>
+            services.AddDbContext<JimTestContext>(opt =>
+                opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
+                    sqlOptions => sqlOptions.MigrationsAssembly(this.GetType().Assembly.FullName)));
             //opt.UseInMemoryDatabase("Identities"));
             //opt.UseSqlServer("Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = JimTest; Integrated Security = True; Connect Timeout = 30; Encrypt = False; TrustServerCertificate = True; ApplicationIntent = ReadWrite; MultiSubnetFailover = False",
             //sqlOptions => sqlOptions.MigrationsAssembly(this.GetType().Assembly.FullName))
             //);
 
 
-            services.AddIdentity<IdentityUser, IdentityRole>()
-                .AddEntityFrameworkStores<IdentityDbContext>()
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<JimTestContext>()
                 .AddDefaultTokenProviders();
 
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, JimTestContext context)
         {
             if (env.IsDevelopment())
             {
@@ -77,6 +80,12 @@ namespace SchoolStore
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            //put our intitialization logic
+            DbInitializer.Initialize(context);
+
+
+
         }
     }
 }
