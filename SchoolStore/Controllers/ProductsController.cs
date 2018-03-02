@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using SchoolStore.Models;
 using System.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 
 namespace SchoolStore.Controllers
 {
@@ -19,12 +20,44 @@ namespace SchoolStore.Controllers
             _context = context;
         }
 
+        public IActionResult List(int? color, int? size, int? category)
+        {
+            IEnumerable<ProductConfiguration> products = _context.ProductConfiguration;
+            _context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+            if (color.HasValue)
+            {
+                products = products.Where(x => x.ColorID == color);
+            }
+
+            //if (size.HasValue)
+            //{
+            //    products = products.Where(x => x.SizeId == size.Value);
+            //}
+
+            //var validProductIds = products.Select(x => x.ID).ToArray();
+
+            //var filteredProducts = _context.Products.Where(x => x.Configurations.Any(x => x.ID));
+            var filteredProducts = _context.Products;
+            ////if (category.HasValue)
+            ////{
+            ////    filteredProducts = filteredProducts.Where(x => x.ProductCategoryId == category.Value);
+            ////}
+
+            return Json(filteredProducts);
+
+            
+        }
+
 
         public IActionResult Index(int id = 1)
         {
             //ProductsViewModel model = new ProductsViewModel();
 
-            var product = _context.Products.Find(id);
+            //When fetching a product by ID:
+            //Change:
+            //var product = _context.Products.Find(id);
+            //To:
+            var product = _context.Products.Include(x => x.Reviews).Single(x => x.ID == id);
             return View(product);
         }
         //    using (var connection = new SqlConnection(_connectionStrings.DefaultConnection))

@@ -20,5 +20,7 @@ namespace SchoolStore.Models
         public DateTime? DateLastModified { get; set; }
 
         public ICollection<CustomerAddress> CustomerAddress { get; set; }
+
+        //Reviewed and good for SchoolStore v2
     }
 }

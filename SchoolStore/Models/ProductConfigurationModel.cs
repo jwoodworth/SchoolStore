@@ -16,6 +16,8 @@ namespace SchoolStore.Models
 
         [System.ComponentModel.DataAnnotations.Required]
         public string ProductSize { get; set; }
-        //add more stuff
+        
+
+
     }
 }

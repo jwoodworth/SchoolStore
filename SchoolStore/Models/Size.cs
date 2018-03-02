@@ -5,9 +5,16 @@ namespace SchoolStore.Models
 {
     public partial class Size
     {
-        public int SizeId { get; set; }
-        public string SizeName { get; set; }
+        public Size()
+        {
+            Configurations = new HashSet<ProductConfiguration>();
+        }
+
+        public int ID { get; set; }
+        public string Name { get; set; }
         public DateTime? DateCreated { get; set; }
         public DateTime? DateLastModified { get; set; }
+
+        public ICollection<ProductConfiguration> Configurations { get; set; }
     }
 }

@@ -5,9 +5,16 @@ namespace SchoolStore.Models
 {
     public partial class Color
     {
-        public int ColorId { get; set; }
-        public string ColorName { get; set; }
+        public Color()
+        {
+            Configurations = new HashSet<ProductConfiguration>();
+        }
+
+        public int ID { get; set; }
+        public string Name { get; set; }
         public DateTime? DateCreated { get; set; }
         public DateTime? DateLastModified { get; set; }
+
+        public ICollection<ProductConfiguration> Configurations { get; set; }
     }
 }

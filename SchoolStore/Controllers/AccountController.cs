@@ -11,6 +11,9 @@ namespace SchoolStore.Controllers
 {
     public class AccountController : Controller
     {
+
+        
+
         //Using Microsoft.AspNetCore.Identity
         private SignInManager<IdentityUser> _signInManager;
 

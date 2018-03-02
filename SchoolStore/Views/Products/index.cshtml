@@ -6,40 +6,51 @@
 <h2>Welcome to The School Store!</h2>
 <div class=row>
     <div class="col-4 image-fluid">
-        @* <img src="@Model.ImageId">   *@
-        <img src="~/images/blackshirt.jpg" />
+        <img src="@Model.ImageURL">
+        @*<img src="~/schoolstore/images/blackshirt.jpg" />*@
     </div>
-    <div class="col-8">
-        <dl>
-            <dt>ID Number</dt>
-            <dd>@Model.ID</dd>
-            <dt>Product Name</dt>
-            <dd>@Model.ProductName</dd>
-            <dt>Description</dt>
-            <dd>@Model.ProductDescription</dd>
-        </dl>
-        <a class="btn btn-success" href="/ProductConfiguration/" role="button">Add to Cart</a>
-    </div>
-   
-@*  <div class="col-4 image-fluid">
-    </div>
-    <div class="col-8">
-        <dl>
-            <dt>ID Number</dt>
-            <dd>@Model.Id</dd>
-            <dt>Product Name</dt>
-            <dd>@Model.ProductName</dd>
-            <dt>Description</dt>
-            <dd>@Model.ProductDescription</dd>
-        </dl>
-        <form asp-action="index" asp-controller="ProductConfiguration/" method="post">
-            <input type="hidden" name="id" value="@Model.Id"/>
-            <input type="submit" value="Gemme an ID" class="btn btn-dark" />
-            <
-        </form>
-    </div>
-    *@
+            <div class="col-8">
+                <dl>
+                    <dt>ID Number</dt>
+                    <dd>@Model.ID</dd>
+                    <dt>Product Name</dt>
+                    <dd>@Model.ProductName</dd>
+                    <dt>Description</dt>
+                    <dd>@Model.ProductDescription</dd>
+                </dl>
 
-</div>
+                    @if (Model.Reviews != null && Model.Reviews.Any())
+                    {
+                         @foreach (var review in Model.Reviews)
+                        {
+                            <blockquote>
+                                @review.Body - @review.Rating
+                            </blockquote>
+                        }
+                    }
+
+                <a class="btn btn-success" href="/ProductConfiguration/" role="button">Add to Cart</a>
+            </div>
+
+        @*  <div class="col-4 image-fluid">
+            </div>
+            <div class="col-8">
+                <dl>
+                    <dt>ID Number</dt>
+                    <dd>@Model.Id</dd>
+                    <dt>Product Name</dt>
+                    <dd>@Model.ProductName</dd>
+                    <dt>Description</dt>
+                    <dd>@Model.ProductDescription</dd>
+                </dl>
+                <form asp-action="index" asp-controller="ProductConfiguration/" method="post">
+                    <input type="hidden" name="id" value="@Model.Id"/>
+                    <input type="submit" value="Gemme an ID" class="btn btn-dark" />
+                    <
+                </form>
+            </div>
+        *@
+
+    </div>
 
 
