@@ -29,5 +29,6 @@ namespace SchoolStore.Models
         public ICollection<ProductConfiguration> Configurations { get; set; }
         public ICollection<CartLineItem> CartLineItems { get; set; }
 
+       
     }
 }

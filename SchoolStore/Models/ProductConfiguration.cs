@@ -13,6 +13,8 @@ namespace SchoolStore.Models
         public int Inventory { get; set; }
         public decimal PriceSurcharge { get; set; }
 
+        public Size Size { get; set; }
+        public Color Color { get; set; }
         public Products Product { get; set; }
     }
 }

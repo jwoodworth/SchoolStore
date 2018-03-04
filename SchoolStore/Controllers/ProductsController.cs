@@ -57,7 +57,13 @@ namespace SchoolStore.Controllers
             //Change:
             //var product = _context.Products.Find(id);
             //To:
-            var product = _context.Products.Include(x => x.Reviews).Single(x => x.ID == id);
+            var product = _context.Products
+                .Include(x => x.Reviews)
+                .Include(x => x.Configurations)
+                    .ThenInclude(x => x.Color)
+                .Include(x => x.Configurations)
+                    .ThenInclude(x => x.Size)
+                .Single(x => x.ID == id);
             return View(product);
         }
         //    using (var connection = new SqlConnection(_connectionStrings.DefaultConnection))
