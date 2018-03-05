@@ -1,0 +1,92 @@
+﻿@model SchoolStore.Models.ShippingViewModel
+@{
+    ViewData["Title"] = "Index";
+    var states = (new string[] { "", "Alabama", "Alaska", "Arkansas" }).Select(x => new SelectListItem { Text = x, Value = x });
+}
+<h2>Shipping Information</h2>
+@if (Model.CartLineItem != null)
+{
+    <div class="row">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Color</th>
+                    <th>Size</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                </tr>
+            </thead>
+            @foreach (var item in Model.CartLineItem)
+            {
+            <tr>
+                <td>@item.Product.ProductName</td>
+                <td>@item.Product.Configurations.Select(x => x.Color)</td>
+                <td>@item.Product.Configurations.Select(x => x.Size)</td>
+                <td>
+                    <form asp-action="update" asp-controller="shipping" method="post" class="form-inline">
+                        <input name="productId" value="@item.Product.ID" type="hidden" />
+                        <input name="quantity" value="@item.Quantity" type="number" class="form-control-sm" /><input type="submit" value="Update Quantity" class="btn btn-primary" />
+                    </form>
+                </td>
+                <td>@((item.Product.UnitPrice ?? 0m).ToString("c"))</td>
+            </tr>
+            }
+            <tfoot>
+                <tr>
+                    <th colspan="2">Subtotal</th>
+                    <th>@Model.CartLineItem.Sum(x => (x.Product.UnitPrice ?? 0m) * x.Quantity).ToString("c")</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+}
+@if (!this.ViewContext.ModelState.IsValid)
+{
+    <div asp-validation-summary="All" class="alert alert-danger"></div>
+}
+<form method="post" asp-action="Index" asp-controller="Shipping" novalidate>
+    <div class="form-group">
+        <label asp-for="Address"></label>
+        <input asp-for="Address" class="@(ViewData.ModelState.ContainsKey("Address") && ViewData.ModelState.FirstOrDefault(x => x.Key == "Address").Value.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid ? "form-control is-invalid" : "form-control")" placeholder="address" required />
+        <span class="invalid-feedback">Address is required</span>
+    </div>
+    <div class="form-group">
+        <label asp-for="City"></label>
+        <input asp-for="City" placeholder="city" class="@(ViewData.ModelState.ContainsKey("City") && ViewData.ModelState.FirstOrDefault(x => x.Key == "City").Value.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid ? "form-control is-invalid" : "form-control")" required />
+        <span class="invalid-feedback">City is required</span>
+    </div>
+    <div class="form-group">
+        <label asp-for="State"></label>
+        <select asp-for="State" asp-items="states" required class="@(ViewData.ModelState.ContainsKey("State") && ViewData.ModelState.FirstOrDefault(x => x.Key == "State").Value.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid ? "form-control is-invalid" : "form-control")"></select>
+        <span asp-validation-for="State" class="invalid-feedback"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="ZipCode"></label>
+        <input asp-for="ZipCode" placeholder="zip code" required pattern="^\d{5}(?:[-\s]\d{4})?$" class="@(ViewData.ModelState.ContainsKey("ZipCode") && ViewData.ModelState.FirstOrDefault(x => x.Key == "ZipCode").Value.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid ? "form-control is-invalid" : "form-control")" />
+        <span asp-validation-for="ZipCode" class="invalid-feedback"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Date"></label>
+        <input asp-for="Date" required class="@(ViewData.ModelState.ContainsKey("Date") && ViewData.ModelState.FirstOrDefault(x => x.Key == "Date").Value.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid ? "form-control is-invalid" : "form-control")" placeholder="Date" />
+        <span asp-validation-for="Date" class="invalid-feedback"></span>
+    </div>
+    <input type="submit" class="btn btn-dark" />
+</form>
+@section Scripts{
+    <script type="text/javascript">
+        $(document).ready(() => {
+            $('form').submit((event) => {
+                if (event.target.checkValidity() == false) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                $(event.target).addClass('was-validated');
+            })
+        });
+
+    </script>
+}
+@section AdditionalHead{
+    @* <meta description="This is the shipping page" />*@
+}

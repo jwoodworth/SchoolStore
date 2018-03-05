@@ -29,19 +29,8 @@ namespace SchoolStore.Controllers
                 products = products.Where(x => x.ColorID == color);
             }
 
-            //if (size.HasValue)
-            //{
-            //    products = products.Where(x => x.SizeId == size.Value);
-            //}
-
-            //var validProductIds = products.Select(x => x.ID).ToArray();
-
-            //var filteredProducts = _context.Products.Where(x => x.Configurations.Any(x => x.ID));
             var filteredProducts = _context.Products;
-            ////if (category.HasValue)
-            ////{
-            ////    filteredProducts = filteredProducts.Where(x => x.ProductCategoryId == category.Value);
-            ////}
+
 
             return Json(filteredProducts);
 
@@ -51,12 +40,7 @@ namespace SchoolStore.Controllers
 
         public IActionResult Index(int id = 1)
         {
-            //ProductsViewModel model = new ProductsViewModel();
 
-            //When fetching a product by ID:
-            //Change:
-            //var product = _context.Products.Find(id);
-            //To:
             var product = _context.Products
                 .Include(x => x.Reviews)
                 .Include(x => x.Configurations)
@@ -66,110 +50,57 @@ namespace SchoolStore.Controllers
                 .Single(x => x.ID == id);
             return View(product);
         }
-        //    using (var connection = new SqlConnection(_connectionStrings.DefaultConnection))
-        //    {
 
-        //        connection.Open();
-        //        var command = connection.CreateCommand();
+        [HttpPost]
+        public IActionResult Index(int id, bool extraParam = true)
+        {
+            Guid cartID;
+            Cart c;
+            CartLineItem i;
+            if (Request.Cookies.ContainsKey("cartID") && Guid.TryParse(Request.Cookies["cartID"], out cartID) && _context.Cart.Any(x => x.TrackingNumber == cartID))
+            {
+                c = _context.Cart
+                    .Include(x => x.CartLineItems)
+                    .ThenInclude(y => y.Product)
+                    .Single(x => x.TrackingNumber == cartID);
+            }
+            else
+            {
+                c = new Cart();
+                cartID = Guid.NewGuid();
+                c.TrackingNumber = cartID;
+                _context.Cart.Add(c);
+            }
 
-        //        //added stored procedure to prevent injection attacks
-        //        command.CommandText = "sp_GetProduct";
-        //        command.Parameters.AddWithValue("@id", id);
-        //        command.CommandType = System.Data.CommandType.StoredProcedure;
+            if (User.Identity.IsAuthenticated)
+            {
+                c.User = _context.Users.Find(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value);
+            }
 
-        //        using (var reader = command.ExecuteReader())
-        //        {
-        //            var idColumn = reader.GetOrdinal("ProductID");
-        //            var nameColumn = reader.GetOrdinal("ProductName");
-        //            var priceColumn = reader.GetOrdinal("Price");
-        //            var sizeColumn = reader.GetOrdinal("ProductSize");
-        //            var descriptionColumn = reader.GetOrdinal("ProductDescription");
-        //            var imageUrlColumn = reader.GetOrdinal("ImageUrl");
-        //            var colorColumn = reader.GetOrdinal("ProductColor");
-        //            while (reader.Read())
-        //            {
-        //                model.Id = reader.GetInt32(idColumn);
-        //                model.ProductName = reader.IsDBNull(nameColumn) ? "" : reader.GetString(nameColumn);   //well written ADO code tests for nulls
-        //                model.Price = reader.IsDBNull(priceColumn) ? 0m : reader.GetDecimal(priceColumn);
-        //                model.ProductColor = reader.GetString(colorColumn);
-        //                model.ProductSize = reader.GetString(sizeColumn);
-        //                model.ProductDescription = reader.GetString(descriptionColumn);
-        //                model.ImageUrl = reader.GetString(imageUrlColumn);
-        //            }
-        //        }
-        //        connection.Close();
-        //    }
+            if (c.CartLineItems.Any(x => x.Product.ID == id))
+            {
+                i = c.CartLineItems.FirstOrDefault(x => x.Product.ID == id);
+            }
+            else
+            {
+                i = new CartLineItem();
+                i.Cart = c;
+                i.Product = _context.Products.Find(id);
+                c.CartLineItems.Add(i);
+            }
+            i.Quantity++;
 
-        //    return View(model);
-
-        //}
-
-
-//        [HttpPost]
-//        public IActionResult Index(string id, bool? extraparm)
-//        {
-//            string cartId;
-//            if (!Request.Cookies.ContainsKey("cartId"))
-//            {
-//                cartId = Guid.NewGuid().ToString();
-//                Response.Cookies.Append("cartId", cartId, new Microsoft.AspNetCore.Http.CookieOptions
-//                {
-//                    Expires = DateTime.Now.AddYears(1)
-//                });
-//            }
-//            else
-//            {
-//                Request.Cookies.TryGetValue("cartId", out cartId);
-//            }
-//            Console.WriteLine("Added {0} to cart {1}", id, cartId);
-//            //TODO: 
-
-//            //Cookies: useful for saving small amount of info
-//            //Response.Cookies.Append("productsId", id);
+            _context.SaveChanges();
+            Response.Cookies.Append("cartID", c.TrackingNumber.ToString(),
+                new Microsoft.AspNetCore.Http.CookieOptions
+                {
+                    Expires = DateTime.Now.AddYears(1)
+                });
 
 
 
+            return RedirectToAction("Index", "Shipping");
+        }
 
-//            return RedirectToAction("Index", "ProductConfiguration");
-//        }
-
-        //public IActionResult Index(int id)
-        //{
-        //    List<Models.ProductsViewModel> products = new List<Models.ProductsViewModel>();
-        //    products.Add(new Models.ProductsViewModel()
-        //    {
-        //        Id = 1,
-        //        ProductName = "T-Shirt",
-        //        ProductColor = "Gray",
-        //        ProductSize = "Small",
-        //        Price = 15.75d,
-        //        ProductDescription = "A classic shirt",
-        //        ImageUrl = "./images/grayshirt.jpg"
-        //    });
-        //    products.Add(new Models.ProductsViewModel()
-        //    {
-        //        Id = 2,
-        //        ProductName = "T-Shirt",
-        //        ProductColor = "Black",
-        //        ProductSize = "Large",
-        //        Price = 18.50d,
-        //        ProductDescription = "A modern shirt",
-        //        ImageUrl = "./images/blackshirt.jpg"
-        //    });
-        //    products.Add(new Models.ProductsViewModel()
-        //    {
-        //        Id = 3,
-        //        ProductName = "T-Shirt",
-        //        ProductColor = "White",
-        //        ProductSize = "X-Large",
-        //        Price = 10.00d,
-        //        ProductDescription = "An inexpensive shirt",
-        //        ImageUrl = "./images/whiteshirt.jpg"
-        //    });
-
-        //    products.Find(     ==id)
-
-
-        //}
     }
 }
