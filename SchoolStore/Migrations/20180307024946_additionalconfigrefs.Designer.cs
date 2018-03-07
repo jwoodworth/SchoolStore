@@ -11,9 +11,10 @@ using System;
 namespace SchoolStore.Migrations
 {
     [DbContext(typeof(JimTestContext))]
-    partial class JimTestContextModelSnapshot : ModelSnapshot
+    [Migration("20180307024946_additionalconfigrefs")]
+    partial class additionalconfigrefs
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -236,9 +237,7 @@ namespace SchoolStore.Migrations
 
                     b.Property<int?>("CartID");
 
-                    b.Property<int?>("ProductConfigurationID");
-
-                    b.Property<int?>("ProductsID");
+                    b.Property<int?>("ProductID");
 
                     b.Property<int>("Quantity");
 
@@ -246,9 +245,7 @@ namespace SchoolStore.Migrations
 
                     b.HasIndex("CartID");
 
-                    b.HasIndex("ProductConfigurationID");
-
-                    b.HasIndex("ProductsID");
+                    b.HasIndex("ProductID");
 
                     b.ToTable("CartLineItem");
                 });
@@ -371,6 +368,8 @@ namespace SchoolStore.Migrations
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<int?>("CartLineItemID");
+
                     b.Property<int>("ColorID");
 
                     b.Property<int>("Inventory");
@@ -384,6 +383,8 @@ namespace SchoolStore.Migrations
                     b.Property<int>("SizeID");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("CartLineItemID");
 
                     b.HasIndex("ColorID");
 
@@ -524,13 +525,9 @@ namespace SchoolStore.Migrations
                         .WithMany("CartLineItems")
                         .HasForeignKey("CartID");
 
-                    b.HasOne("SchoolStore.Models.ProductConfiguration", "ProductConfiguration")
-                        .WithMany()
-                        .HasForeignKey("ProductConfigurationID");
-
-                    b.HasOne("SchoolStore.Models.Products")
+                    b.HasOne("SchoolStore.Models.Products", "Product")
                         .WithMany("CartLineItems")
-                        .HasForeignKey("ProductsID");
+                        .HasForeignKey("ProductID");
                 });
 
             modelBuilder.Entity("SchoolStore.Models.CustomerAddress", b =>
@@ -567,6 +564,10 @@ namespace SchoolStore.Migrations
 
             modelBuilder.Entity("SchoolStore.Models.ProductConfiguration", b =>
                 {
+                    b.HasOne("SchoolStore.Models.CartLineItem")
+                        .WithMany("Configurations")
+                        .HasForeignKey("CartLineItemID");
+
                     b.HasOne("SchoolStore.Models.Color", "Color")
                         .WithMany("Configurations")
                         .HasForeignKey("ColorID")

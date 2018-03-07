@@ -36,6 +36,8 @@ namespace SchoolStore
             services.Configure<Models.ConnectionStrings>(Configuration.GetSection("ConnectionStrings"));
             services.AddOptions();
 
+
+
             //for Identity Framework stuff
 
 
@@ -55,10 +57,24 @@ namespace SchoolStore
                 .AddEntityFrameworkStores<JimTestContext>()
                 .AddDefaultTokenProviders();
 
+            services.AddTransient<SendGrid.SendGridClient>((x) =>
+            {
+                return new SendGrid.SendGridClient(Configuration["sendgrid"]);
+            });
+
+            services.AddTransient<Braintree.BraintreeGateway>((x) =>
+            {
+                return new Braintree.BraintreeGateway(
+                    Configuration["braintree.environment"],
+                    Configuration["braintree.merchantid"],
+                    Configuration["braintree.publickey"],
+                    Configuration["braintree.privatekey"]
+                );
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, JimTestContext context)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, JimTestContext context, SendGrid.SendGridClient sendGridClient)
         {
             if (env.IsDevelopment())
             {
@@ -69,6 +85,10 @@ namespace SchoolStore
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+
+
+
+            
 
             app.UseStaticFiles();
 

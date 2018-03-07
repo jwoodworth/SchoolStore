@@ -4,7 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SchoolStore.Models;
-
+//
+//Old File do not use
+//
 namespace SchoolStore.Controllers
 {
     public class ProductConfigurationController : Controller

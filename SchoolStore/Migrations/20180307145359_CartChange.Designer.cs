@@ -11,9 +11,10 @@ using System;
 namespace SchoolStore.Migrations
 {
     [DbContext(typeof(JimTestContext))]
-    partial class JimTestContextModelSnapshot : ModelSnapshot
+    [Migration("20180307145359_CartChange")]
+    partial class CartChange
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -236,7 +237,7 @@ namespace SchoolStore.Migrations
 
                     b.Property<int?>("CartID");
 
-                    b.Property<int?>("ProductConfigurationID");
+                    b.Property<int?>("ProductID");
 
                     b.Property<int?>("ProductsID");
 
@@ -246,7 +247,7 @@ namespace SchoolStore.Migrations
 
                     b.HasIndex("CartID");
 
-                    b.HasIndex("ProductConfigurationID");
+                    b.HasIndex("ProductID");
 
                     b.HasIndex("ProductsID");
 
@@ -524,9 +525,9 @@ namespace SchoolStore.Migrations
                         .WithMany("CartLineItems")
                         .HasForeignKey("CartID");
 
-                    b.HasOne("SchoolStore.Models.ProductConfiguration", "ProductConfiguration")
+                    b.HasOne("SchoolStore.Models.ProductConfiguration", "Product")
                         .WithMany()
-                        .HasForeignKey("ProductConfigurationID");
+                        .HasForeignKey("ProductID");
 
                     b.HasOne("SchoolStore.Models.Products")
                         .WithMany("CartLineItems")

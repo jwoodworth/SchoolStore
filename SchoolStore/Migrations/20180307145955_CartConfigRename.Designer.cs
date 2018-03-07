@@ -11,9 +11,10 @@ using System;
 namespace SchoolStore.Migrations
 {
     [DbContext(typeof(JimTestContext))]
-    partial class JimTestContextModelSnapshot : ModelSnapshot
+    [Migration("20180307145955_CartConfigRename")]
+    partial class CartConfigRename
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

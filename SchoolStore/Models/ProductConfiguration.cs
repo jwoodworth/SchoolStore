@@ -7,6 +7,7 @@ namespace SchoolStore.Models
 {
     public class ProductConfiguration
     {
+
         public int ID { get; set; }
         public int ColorID { get; set; }
         public int SizeID { get; set; }

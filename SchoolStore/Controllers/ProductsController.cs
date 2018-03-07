@@ -20,22 +20,22 @@ namespace SchoolStore.Controllers
             _context = context;
         }
 
-        public IActionResult List(int? color, int? size, int? category)
-        {
-            IEnumerable<ProductConfiguration> products = _context.ProductConfiguration;
-            _context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
-            if (color.HasValue)
-            {
-                products = products.Where(x => x.ColorID == color);
-            }
+        //public IActionResult List(int? color, int? size, int? category)
+        //{
+        //    IEnumerable<ProductConfiguration> products = _context.ProductConfiguration;
+        //    _context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+        //    if (color.HasValue)
+        //    {
+        //        products = products.Where(x => x.ColorID == color);
+        //    }
 
-            var filteredProducts = _context.Products;
+        //    var filteredProducts = _context.Products;
 
 
-            return Json(filteredProducts);
+        //    return Json(filteredProducts);
 
             
-        }
+        //}
 
 
         public IActionResult Index(int id = 1)
@@ -52,16 +52,24 @@ namespace SchoolStore.Controllers
         }
 
         [HttpPost]
-        public IActionResult Index(int id, bool extraParam = true)
+        public IActionResult Index(int id, int? size, int? color)
         {
             Guid cartID;
             Cart c;
             CartLineItem i;
             if (Request.Cookies.ContainsKey("cartID") && Guid.TryParse(Request.Cookies["cartID"], out cartID) && _context.Cart.Any(x => x.TrackingNumber == cartID))
             {
+                //c = _context.Cart
+                //    .Include(x => x.CartLineItems)
+                //    .Include(x => x.)
+                //    .ThenInclude(y => y.Color)
+                //    .Include(y => y.Configurations)
+                //    .ThenInclude(y => y.Size)
+                //    .Single(x => x.TrackingNumber == cartID);
+
                 c = _context.Cart
                     .Include(x => x.CartLineItems)
-                    .ThenInclude(y => y.Product)
+                    .ThenInclude(y => y.ProductConfiguration)
                     .Single(x => x.TrackingNumber == cartID);
             }
             else
@@ -77,15 +85,15 @@ namespace SchoolStore.Controllers
                 c.User = _context.Users.Find(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value);
             }
 
-            if (c.CartLineItems.Any(x => x.Product.ID == id))
+            if (c.CartLineItems.Any(x => x.ProductConfiguration.ID == id))
             {
-                i = c.CartLineItems.FirstOrDefault(x => x.Product.ID == id);
+                i = c.CartLineItems.FirstOrDefault(x => x.ProductConfiguration.Product.ID == id && x.ProductConfiguration.ColorID == color && x.ProductConfiguration.SizeID == size);
             }
             else
             {
                 i = new CartLineItem();
                 i.Cart = c;
-                i.Product = _context.Products.Find(id);
+                i.ProductConfiguration = _context.ProductConfiguration.Single(x => x.Product.ID == id && x.ColorID == color && x.SizeID == size);
                 c.CartLineItems.Add(i);
             }
             i.Quantity++;

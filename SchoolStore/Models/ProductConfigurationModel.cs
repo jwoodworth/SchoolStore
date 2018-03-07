@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
-
+/// <summary>
+/// Must be old do not use
+/// </summary>
 namespace SchoolStore.Models
 {
     public class ProductConfigurationModel
