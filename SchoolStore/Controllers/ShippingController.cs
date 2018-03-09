@@ -13,12 +13,25 @@ namespace SchoolStore.Controllers
 
         private JimTestContext _context;
         private Braintree.BraintreeGateway _braintreeGateway;
+        private SmartyStreets.USStreetApi.Client _usStreetClient;
 
-        public ShippingController(JimTestContext context, Braintree.BraintreeGateway braintreeGateway)
+        public ShippingController(JimTestContext context, Braintree.BraintreeGateway braintreeGateway, SmartyStreets.USStreetApi.Client usStreetClient)
         {
             _context = context;
             _braintreeGateway = braintreeGateway;
+            _usStreetClient = usStreetClient;
         }
+
+        public IActionResult ValidateAddress(string street = "222 W Ontario", string city = "Chicago", string state = "IL")
+        {
+            SmartyStreets.USStreetApi.Lookup lookup = new SmartyStreets.USStreetApi.Lookup();
+            lookup.Street = street;
+            lookup.City = city;
+            lookup.State = state;
+            _usStreetClient.Send(lookup);
+            return Json(lookup.Result);
+        }
+
 
 
         [HttpGet]
@@ -91,6 +104,12 @@ namespace SchoolStore.Controllers
                 var result = await _braintreeGateway.Transaction.SaleAsync(saleRequest);
                 if (result.IsSuccess())
                 {
+                    //pull in cart info form class
+
+
+
+
+
                     //If model state is valid, proceed to the next step.
                     return this.RedirectToAction("Index", "Home");  //got to order complete page
                 }

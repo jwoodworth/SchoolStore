@@ -27,7 +27,7 @@ namespace SchoolStore.Controllers
         [ValidateAntiForgeryToken]
         //public IActionResult Index(string productname, string productcolor, string productsize)
         // easier method below
-        public IActionResult Index(ProductConfigurationModel model)
+        public IActionResult Index(ProductConfiguration model)
         {
             if (ModelState.IsValid)
             {

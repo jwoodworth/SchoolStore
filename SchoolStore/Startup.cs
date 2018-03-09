@@ -57,6 +57,19 @@ namespace SchoolStore
                 .AddEntityFrameworkStores<JimTestContext>()
                 .AddDefaultTokenProviders();
 
+
+            //add smarty streets stuff here and put tokens in secrets file
+            services.AddTransient<SmartyStreets.USStreetApi.Client>((x) =>
+            {
+                var client = new SmartyStreets.ClientBuilder(
+                    Configuration["smartystreets.authid"],
+                    Configuration["smartystreets.authtoken"])
+
+                        .BuildUsStreetApiClient();
+
+                return client;
+            });
+
             services.AddTransient<SendGrid.SendGridClient>((x) =>
             {
                 return new SendGrid.SendGridClient(Configuration["sendgrid"]);

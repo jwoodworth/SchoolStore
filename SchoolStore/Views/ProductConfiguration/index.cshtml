@@ -1,4 +1,4 @@
-﻿@model SchoolStore.Models.ProductConfigurationModel
+﻿@model SchoolStore.Models.ProductConfiguration
 @{
     ViewData["Title"] = "Index";
     var states = (new string[] { "", "Alabama", "Alaska", "Arkansas" }).Select(x => new SelectListItem { Text = x, Value = x });
@@ -22,11 +22,11 @@
         <!--Need to add name attribute to all controls-->
         <div class="form-group row">
             <div class="col-sm-2">
-                <label asp-for="ProductName">Product</label>
+                <label asp-for="Product.ProductName">Product</label>
             </div>
             <div class="col-sm-10">
-                <input asp-for="ProductName" class="@(ViewData.ModelState.ContainsKey("ProductName") && ViewData.ModelState.FirstOrDefault(x => x.Key == "ProductName").Value.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid ? "form-control is-invalid" : "form-control")" required minlength="3"/>
-                <span asp-validation-for="ProductName" class="invalid-feedback">Name must be at least 3 characters</span>
+                <input asp-for="Product.ProductName" class="@(ViewData.ModelState.ContainsKey("ProductName") && ViewData.ModelState.FirstOrDefault(x => x.Key == "ProductName").Value.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid ? "form-control is-invalid" : "form-control")" required minlength="3"/>
+                <span asp-validation-for="Product.ProductName" class="invalid-feedback">Name must be at least 3 characters</span>
             </div>
         </div>
         
@@ -44,8 +44,8 @@
                 <label for="productsize" class="col-md-4 col-form-label">Size</label>
             </div>
             <div class="col-sm-10">
-                <select asp-for="ProductSize" asp-items="sizes" class="@(ViewData.ModelState.ContainsKey("ProductSize") && ViewData.ModelState.FirstOrDefault(x => x.Key == "ProductSize").Value.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid ? "form-control is-invalid" : "form-control")"></select>
-                <span asp-validation-for="ProductSize" class="invalid-feedback"></span>
+                <select asp-for="Size" asp-items="sizes" class="@(ViewData.ModelState.ContainsKey("ProductSize") && ViewData.ModelState.FirstOrDefault(x => x.Key == "ProductSize").Value.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid ? "form-control is-invalid" : "form-control")"></select>
+                <span asp-validation-for="Size" class="invalid-feedback"></span>
 
             </div>
         </div>
@@ -57,8 +57,8 @@
                 <label for="productcolor" class="col-md-4 col-form-label">Color</label>
             </div>
             <div class="col-sm-10">
-                <select asp-for="ProductColor" asp-items="colors" class="@(ViewData.ModelState.ContainsKey("ProductColor") && ViewData.ModelState.FirstOrDefault(x => x.Key == "ProductColor").Value.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid ? "form-control is-invalid" : "form-control")"></select>
-                <span asp-validation-for="ProductColor" class="invalid-feedback"></span>
+                <select asp-for="Color" asp-items="colors" class="@(ViewData.ModelState.ContainsKey("ProductColor") && ViewData.ModelState.FirstOrDefault(x => x.Key == "ProductColor").Value.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid ? "form-control is-invalid" : "form-control")"></select>
+                <span asp-validation-for="Color" class="invalid-feedback"></span>
 
                 @*
                 @Html.DropDownListFor(m => m.ProductColor, ((string[])ViewData["Colors"]).Select(x => new SelectListItem { Text = x, Value = x }), new { @class = "form-control" })

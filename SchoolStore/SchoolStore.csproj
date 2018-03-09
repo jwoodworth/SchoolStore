@@ -9,6 +9,7 @@
     <PackageReference Include="Braintree" Version="3.12.0" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.3" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.1" />
     <PackageReference Include="Sendgrid" Version="9.9.0" />
   </ItemGroup>
 
@@ -16,6 +17,12 @@
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.1" />
     <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.1" />
     <DotNetCliToolReference Include="Microsoft.Extensions.SecretManager.Tools" Version="2.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="smartystreets-dotnet-sdk">
+      <HintPath>smartystreets-dotnet-sdk.dll</HintPath>
+    </Reference>
   </ItemGroup>
   
 </Project>

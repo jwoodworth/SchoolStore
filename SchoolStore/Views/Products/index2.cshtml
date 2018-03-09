@@ -116,7 +116,6 @@
             $("#color").children().each((pos, option) => {
                 if ((option.value === "") || (validColors.indexOf(parseInt(option.value)) >= 0)) {
                     //console.log("keeping" + option.value);
-                    //var image = configurations.filter(x => x.ColorId == selectedColor)[0].ImageUrl;
                     $(option).removeAttr("disabled");
 
                 } else {

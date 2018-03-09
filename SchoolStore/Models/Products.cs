@@ -20,7 +20,6 @@ namespace SchoolStore.Models
         public DateTime? DateCreated { get; set; }
         public DateTime? DateLastModified { get; set; }
         public ProductCategory Category { get; set;}
-        public string ImageURL { get; set; }
             
         //A product can have many reviews
         public ICollection<Review> Reviews { get; set; }

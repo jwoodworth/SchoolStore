@@ -57,22 +57,19 @@ namespace SchoolStore.Models
                     ProductName = "Cotton T-Shirt",
                     ProductDescription = "This is a great T-Shirt for work or home.",
                     //Category = context.ProductCategory.First(x => x.Name == "T-Shirts"),
-                    UnitPrice = 15.5M,
-                    ImageURL = "/images/blackshirt.jpg"
+                    UnitPrice = 15.5M
                 }, new Products
                 {
                     ProductName = "Hoodie Sweatshirts",
                     ProductDescription = "Classic casual look.  You can not go wrong this choice.",
                     //Category = context.ProductCategory.First(x => x.Name == "Sweatshirt"),
-                    UnitPrice = 25.75M,
-                    ImageURL = "/images/graysweatshirt.jpg"
+                    UnitPrice = 25.75M
                 }, new Products
                 {
                     ProductName = "Baseball Cap",
                     ProductDescription = "Sporty look.  Go Cubs!! ",
                     //Category = context.ProductCategory.First(x => x.Name == "Hats"),
-                    UnitPrice = 12.00M,
-                    ImageURL = "/images/baseballcap.jpg"
+                    UnitPrice = 12.00M
                 }
 
                 );
@@ -145,7 +142,7 @@ namespace SchoolStore.Models
                 context.Color.AddRange(new Color
                 {
                     //ID = 1,
-                    Name = "Black",
+                    Name = "Black"
                 }, new Color
                 {
                     //ID = 2,
@@ -177,30 +174,35 @@ namespace SchoolStore.Models
                     ColorID = 1,
                     SizeID = 1,
                     Inventory = 5,
+                    ImageURL = "/images/graysweatshirt.jpg",
                     Product = context.Products.SingleOrDefault(x => x.ID == 2)
                 }, new ProductConfiguration
                 {
                     ColorID = 1,
                     SizeID = 2,
                     Inventory = 3,
+                    ImageURL = "/images/blackshirt.jpg",
                     Product = context.Products.SingleOrDefault(x => x.ID == 1)
                 }, new ProductConfiguration
                 {
                     ColorID = 1,
                     SizeID = 3,
                     Inventory = 5,
+                    ImageURL = "/images/blackshirt.jpg",
                     Product = context.Products.SingleOrDefault(x => x.ID == 1)
                 }, new ProductConfiguration
                 {
                     ColorID = 2,
                     SizeID = 4,
                     Inventory = 10,
+                    ImageURL = "/images/grayshirt.jpg",
                     Product = context.Products.SingleOrDefault(x => x.ID == 1)
                 }, new ProductConfiguration
                 {
                     ColorID = 2,
                     SizeID = 1,
                     Inventory = 7,
+                    ImageURL = "/images/grayshirt.jpg",
                     Product = context.Products.SingleOrDefault(x => x.ID == 2)
                 }
                 );
