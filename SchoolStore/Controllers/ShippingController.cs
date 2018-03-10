@@ -66,6 +66,7 @@ namespace SchoolStore.Controllers
             if (Request.Cookies.TryGetValue("cartID", out cartID) && Guid.TryParse(cartID, out trackingNumber) && _context.Cart.Any(x => x.TrackingNumber == trackingNumber))
             {
                 var cart = _context.Cart.Include(x => x.CartLineItems).ThenInclude(y => y.ProductConfiguration).Single(x => x.TrackingNumber == trackingNumber);
+                //var cartItem = cart.CartLineItems.Single(x => x.ProductConfiguration.ID == productID);
                 var cartItem = cart.CartLineItems.Single(x => x.ProductConfiguration.ID == productID);
                 cartItem.Quantity = quantity;
 

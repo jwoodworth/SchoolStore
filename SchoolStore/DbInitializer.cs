@@ -56,22 +56,38 @@ namespace SchoolStore.Models
                 {
                     ProductName = "Cotton T-Shirt",
                     ProductDescription = "This is a great T-Shirt for work or home.",
-                    //Category = context.ProductCategory.First(x => x.Name == "T-Shirts"),
                     UnitPrice = 15.5M
                 }, new Products
                 {
+                    ProductName = "Performance T-Shirt",
+                    ProductDescription = "Cool, wicking fabric to keep you dry in all activities",
+                    UnitPrice = 18.75M
+                }, new Products
+                {
+                    ProductName = "Sweatshirt",
+                    ProductDescription = "Classic comfortable sweatshirt ",
+                    UnitPrice = 25.00M
+                }, new Products
+                {
                     ProductName = "Hoodie Sweatshirts",
-                    ProductDescription = "Classic casual look.  You can not go wrong this choice.",
-                    //Category = context.ProductCategory.First(x => x.Name == "Sweatshirt"),
-                    UnitPrice = 25.75M
+                    ProductDescription = "A great hooded sweatshirt. You can not go wrong this choice.",
+                    UnitPrice = 32.75M
                 }, new Products
                 {
                     ProductName = "Baseball Cap",
-                    ProductDescription = "Sporty look.  Go Cubs!! ",
-                    //Category = context.ProductCategory.First(x => x.Name == "Hats"),
-                    UnitPrice = 12.00M
+                    ProductDescription = "Sporty look.  Go Cubs!!",
+                    UnitPrice = 20.75M
+                }, new Products
+                {
+                    ProductName = "Candy Cane Hat",
+                    ProductDescription = "Add some fun headwear anytime. ",
+                    UnitPrice = 23.00M
+                }, new Products
+                {
+                    ProductName = "Crab Hat",
+                    ProductDescription = "Fun crabby hat. ",
+                    UnitPrice = 33.00M
                 }
-
                 );
                 context.SaveChanges();
             }
@@ -125,16 +141,28 @@ namespace SchoolStore.Models
                 }, new Size
                 {
                     //SizeId = 300,
+                    Name = "Adult Small",
+                }, new Size
+                {
+                    //SizeId = 300,
                     Name = "Adult Medium",
                 }, new Size
                 {
                     //SizeId = 300,
-                    Name = "Adult Xlarge",
+                    Name = "Adult Large",
+                }, new Size
+                {
+                    //SizeId = 300,
+                    Name = "Adult XLarge",
+                }, new Size
+                {
+                    //SizeId = 300,
+                    Name = "Adult XXlarge",
                 }
                 );
-                context.SaveChanges();
-            }
-            //
+                    context.SaveChanges();
+                }
+                //
 
             // Table to Load
             if (!context.Color.Any())
@@ -159,6 +187,10 @@ namespace SchoolStore.Models
                 {
                     //ID = 5,
                     Name = "Blue",
+                }, new Color
+                {
+                    //ID = 6,
+                    Name = "One Color Only",
                 }
                 );
                 context.SaveChanges();
@@ -174,21 +206,21 @@ namespace SchoolStore.Models
                     ColorID = 1,
                     SizeID = 1,
                     Inventory = 5,
-                    ImageURL = "/images/graysweatshirt.jpg",
-                    Product = context.Products.SingleOrDefault(x => x.ID == 2)
-                }, new ProductConfiguration
-                {
-                    ColorID = 1,
-                    SizeID = 2,
-                    Inventory = 3,
                     ImageURL = "/images/blackshirt.jpg",
                     Product = context.Products.SingleOrDefault(x => x.ID == 1)
                 }, new ProductConfiguration
                 {
                     ColorID = 1,
+                    SizeID = 7,
+                    Inventory = 3,
+                    ImageURL = "/images/blackshirt.jpg",
+                    Product = context.Products.SingleOrDefault(x => x.ID == 1)
+                }, new ProductConfiguration
+                {
+                    ColorID = 2,
                     SizeID = 3,
                     Inventory = 5,
-                    ImageURL = "/images/blackshirt.jpg",
+                    ImageURL = "/images/grayshirt.jpg",
                     Product = context.Products.SingleOrDefault(x => x.ID == 1)
                 }, new ProductConfiguration
                 {
@@ -200,34 +232,78 @@ namespace SchoolStore.Models
                 }, new ProductConfiguration
                 {
                     ColorID = 2,
-                    SizeID = 1,
+                    SizeID = 6,
                     Inventory = 7,
                     ImageURL = "/images/grayshirt.jpg",
+                    Product = context.Products.SingleOrDefault(x => x.ID == 1)
+                }, new ProductConfiguration
+                {
+                    ColorID = 1,
+                    SizeID = 5,
+                    Inventory = 7,
+                    ImageURL = "/images/blackshirtperformance.jpg",
                     Product = context.Products.SingleOrDefault(x => x.ID == 2)
+                }, new ProductConfiguration
+                {
+                    ColorID = 1,
+                    SizeID = 3,
+                    Inventory = 5,
+                    ImageURL = "/images/blackshirtperformance.jpg",
+                    Product = context.Products.SingleOrDefault(x => x.ID == 2)
+                }, new ProductConfiguration
+                {
+                    ColorID = 2,
+                    SizeID = 4,
+                    Inventory = 10,
+                    ImageURL = "/images/graysweatshirt.jpg",
+                    Product = context.Products.SingleOrDefault(x => x.ID == 3)
+                }, new ProductConfiguration
+                {
+                    ColorID = 1,
+                    SizeID = 6,
+                    Inventory = 7,
+                    ImageURL = "/images/blacksweatshirt.jpg",
+                    Product = context.Products.SingleOrDefault(x => x.ID == 3)
+                }, new ProductConfiguration
+                {
+                    ColorID = 2,
+                    SizeID = 1,
+                    Inventory = 7,
+                    ImageURL = "/images/grayhoodsweatshirt.jpg",
+                    Product = context.Products.SingleOrDefault(x => x.ID == 4)
+                }, new ProductConfiguration
+                {
+                    ColorID = 1,
+                    SizeID = 2,
+                    Inventory = 3,
+                    ImageURL = "/images/blackhoodsweatshirt.jpg",
+                    Product = context.Products.SingleOrDefault(x => x.ID == 4)
+                }, new ProductConfiguration
+                {
+                    ColorID = 5,
+                    SizeID = 3,
+                    Inventory = 5,
+                    ImageURL = "/images/bluebaseballcap.jpg",
+                    Product = context.Products.SingleOrDefault(x => x.ID == 5)
+                }, new ProductConfiguration
+                {
+                    ColorID = 6,
+                    SizeID = 8,
+                    Inventory = 10,
+                    ImageURL = "/images/crabbyhat.jpg",
+                    Product = context.Products.SingleOrDefault(x => x.ID == 1)
+                }, new ProductConfiguration
+                {
+                    ColorID = 4,
+                    SizeID = 6,
+                    Inventory = 7,
+                    ImageURL = "/images/candycanehat.jpg",
+                    Product = context.Products.SingleOrDefault(x => x.ID == 1)
                 }
                 );
                 context.SaveChanges();
             }
             //
-
-
-            // 8th Table to Load
-            if (!context.OrderHeader.Any())
-            {
-                context.OrderHeader.AddRange(new OrderHeader    
-                {
-                   BillToAddressId = 1,
-                   ShipCost = 100.00M,
-                   ShipToAddressId = 2,
-                   SubTotal = 250.00M,
-                   TaxAmount = 10.00M,
-                   TotalDue = 360.00M,
-                   TrackingNumber = Guid.NewGuid(),
-                  // User = context.Users.First(x => x.UserName == "jim" )
-                }               
-                );
-                context.SaveChanges();
-            }
          
          }
     }

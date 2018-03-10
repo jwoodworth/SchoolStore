@@ -1,0 +1,11 @@
+﻿
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@inject JimTestContext context
+@foreach (var prodcat in context.ProductCategory)
+{
+    <li class="nav-item"> <a asp-area="" asp-controller="ProductCategory" asp-action="Index" asp-route-id="@prodcat.ID"class="nav-link">@prodcat.Name</a></li>
+
+}
