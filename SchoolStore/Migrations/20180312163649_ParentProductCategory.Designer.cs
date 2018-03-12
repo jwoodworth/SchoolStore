@@ -11,9 +11,10 @@ using System;
 namespace SchoolStore.Migrations
 {
     [DbContext(typeof(JimTestContext))]
-    partial class JimTestContextModelSnapshot : ModelSnapshot
+    [Migration("20180312163649_ParentProductCategory")]
+    partial class ParentProductCategory
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

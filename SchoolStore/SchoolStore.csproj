@@ -6,6 +6,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20180312162449_ParentProductCategory.cs" />
+    <Compile Remove="Migrations\20180312162449_ParentProductCategory.Designer.cs" />
+    <Compile Remove="Migrations\20180312162954_ParentProductCategory.cs" />
+    <Compile Remove="Migrations\20180312162954_ParentProductCategory.Designer.cs" />
+    <Compile Remove="Migrations\20180312163149_ParentProductCategory.cs" />
+    <Compile Remove="Migrations\20180312163149_ParentProductCategory.Designer.cs" />
+    <Compile Remove="Migrations\20180312163425_ParentProductCategory.cs" />
+    <Compile Remove="Migrations\20180312163425_ParentProductCategory.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Braintree" Version="3.12.0" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.3" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.1" />

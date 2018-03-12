@@ -59,17 +59,11 @@ namespace SchoolStore.Controllers
             CartLineItem i;
             if (Request.Cookies.ContainsKey("cartID") && Guid.TryParse(Request.Cookies["cartID"], out cartID) && _context.Cart.Any(x => x.TrackingNumber == cartID))
             {
-                //c = _context.Cart
-                //    .Include(x => x.CartLineItems)
-                //    .Include(x => x.)
-                //    .ThenInclude(y => y.Color)
-                //    .Include(y => y.Configurations)
-                //    .ThenInclude(y => y.Size)
-                //    .Single(x => x.TrackingNumber == cartID);
-
+  
                 c = _context.Cart
                     .Include(x => x.CartLineItems)
                     .ThenInclude(y => y.ProductConfiguration)
+                    .ThenInclude(z => z.Product)
                     .Single(x => x.TrackingNumber == cartID);
             }
             else
@@ -84,12 +78,8 @@ namespace SchoolStore.Controllers
             {
                 c.User = _context.Users.Find(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value);
             }
-
-            if (c.CartLineItems.Any(x => x.ProductConfiguration.ID == id))
-            {
-                i = c.CartLineItems.FirstOrDefault(x => x.ProductConfiguration.Product.ID == id && x.ProductConfiguration.ColorID == color && x.ProductConfiguration.SizeID == size);
-            }
-            else
+            i = c.CartLineItems.FirstOrDefault(x => x.ProductConfiguration.Product.ID == id && x.ProductConfiguration.ColorID == color && x.ProductConfiguration.SizeID == size);
+            if (i == null)
             {
                 i = new CartLineItem();
                 i.Cart = c;

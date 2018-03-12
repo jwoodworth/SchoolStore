@@ -13,30 +13,38 @@
 <div class="row">
     <div class="col-2">
         <div class="card">
-            <div class="card-header">Possible Filter By Color</div>
+            @*<div class="card-header">Possible Filter By Color</div>*@
             <div class="card-body">
                 @*
-        <form>
-            @foreach (string color in ((IEnumerable<string>)ViewData["color"]))
-            {
-                <input type="checkbox" value="@color" name="color" />@color
-            }
-        </form>
+            <form>
+                @foreach (string color in ((IEnumerable<string>)ViewData["color"]))
+                {
+                    <input type="checkbox" value="@color" name="color" />@color
+                }
+            </form>
+                    
                 *@
+                @foreach(var child in Model.ChildCategories)
+                {
+                    <a asp-route-id="@child.ID">@child.Name</a>
+
+                }
             </div>
         </div>
-    </div>
-</div>
-<div class="col-10">
-    <div class="row">
-        @foreach (Products product in Model.Products)
-        {
+      </div>
+    <div class="col-10">
+        <div class="row">
+          @foreach (Products product in Model.Products)
+            {
             <div class="col-3">
-                <h3>@product.ProductName</h3>
+                <h5>@product.ProductName</h5>
+                <p>@product.ProductDescription</p>
+                <img src="@product.Configurations." />
                 @*how to link image from configuration to view with products model only *@
-                <a asp-area="" asp-controller="Products" asp-action="Index" asp-route="@product.Category.ParentProductCategory`">Configure Product</a>
+                <a asp-area="" asp-controller="Products" asp-action="Index" asp-route-id="@product.ID">Configure Product</a>
             </div>
 
-        }
+            }
+        </div>
     </div>
-</div>
+ </div>

@@ -56,6 +56,15 @@ namespace SchoolStore.Models
             modelBuilder.Entity<OrderLineItem>().HasOne(l => l.Product).WithMany(o => o.OrderLineItems);
 
             modelBuilder.Entity<Products>().HasMany(p => p.OrderLineItems).WithOne(l => l.Product).IsRequired();
+
+            //Trying to work through changes Joe suggested
+
+            //Product Category has many products, each product has a Parent Product Category, which is required
+            //modelBuilder.Entity<ProductCategory>()
+            //    .HasOne(p => p.ParentProductCategory)
+            //    .WithMany(p =>p.ChildCategories)
+            //    .OnDelete(DeleteBehavior.);
+
         }
     }
 }

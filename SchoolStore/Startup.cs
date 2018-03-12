@@ -115,7 +115,7 @@ namespace SchoolStore
             });
 
             //put our intitialization logic
-            DbInitializer.Initialize(context);
+           DbInitializer.Initialize(context);
 
 
 

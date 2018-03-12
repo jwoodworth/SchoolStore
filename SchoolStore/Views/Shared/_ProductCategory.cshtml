@@ -4,7 +4,7 @@
 *@
 
 @inject JimTestContext context
-@foreach (var prodcat in context.ProductCategory)
+@foreach (var prodcat in context.ProductCategory.Where(x => x.ParentProductCategoryId == null))
 {
     <li class="nav-item"> <a asp-area="" asp-controller="ProductCategory" asp-action="Index" asp-route-id="@prodcat.ID"class="nav-link">@prodcat.Name</a></li>
 

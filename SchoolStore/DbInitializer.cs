@@ -30,19 +30,27 @@ namespace SchoolStore.Models
                 context.SaveChanges();
             }
 
+           
+
             if (!context.ProductCategory.Any())
             {
-                context.ProductCategory.AddRange(new ProductCategory
+                ProductCategory clothes = new ProductCategory();
+                clothes.Name = "Clothes";
+                context.ProductCategory.AddRange(clothes,
+                    new ProductCategory
                 {
                     //ProductCategoryId = 1,
-                    Name = "T-Shirts"
+                    Name = "T-Shirts",
+                    ParentProductCategory = clothes
                 }, new ProductCategory
                 {
                     //ProductCategoryId = 2,
-                    Name = "Sweatshirts"
+                    Name = "Sweatshirts",
+                    ParentProductCategory = clothes
                 }, new ProductCategory
                 {
                     //ProductCategoryId = 3,
+                    ParentProductCategory = clothes,
                     Name = "Hats"
                 }
                 );
@@ -56,37 +64,44 @@ namespace SchoolStore.Models
                 {
                     ProductName = "Cotton T-Shirt",
                     ProductDescription = "This is a great T-Shirt for work or home.",
-                    UnitPrice = 15.5M
+                    UnitPrice = 15.5M,
+                    Category = context.ProductCategory.First(x => x.Name == "T-Shirts")
                 }, new Products
                 {
                     ProductName = "Performance T-Shirt",
                     ProductDescription = "Cool, wicking fabric to keep you dry in all activities",
-                    UnitPrice = 18.75M
+                    UnitPrice = 18.75M,
+                    Category = context.ProductCategory.First(x => x.Name == "T-Shirts")
                 }, new Products
                 {
                     ProductName = "Sweatshirt",
                     ProductDescription = "Classic comfortable sweatshirt ",
-                    UnitPrice = 25.00M
+                    UnitPrice = 25.00M,
+                    Category = context.ProductCategory.First(x => x.Name == "Sweatshirts")
                 }, new Products
                 {
                     ProductName = "Hoodie Sweatshirts",
                     ProductDescription = "A great hooded sweatshirt. You can not go wrong this choice.",
-                    UnitPrice = 32.75M
+                    UnitPrice = 32.75M,
+                    Category = context.ProductCategory.First(x => x.Name == "Sweatshirts")
                 }, new Products
                 {
                     ProductName = "Baseball Cap",
                     ProductDescription = "Sporty look.  Go Cubs!!",
-                    UnitPrice = 20.75M
+                    UnitPrice = 20.75M,
+                    Category = context.ProductCategory.First(x => x.Name == "Hats")
                 }, new Products
                 {
                     ProductName = "Candy Cane Hat",
                     ProductDescription = "Add some fun headwear anytime. ",
-                    UnitPrice = 23.00M
+                    UnitPrice = 23.00M,
+                    Category = context.ProductCategory.First(x => x.Name == "Hats")
                 }, new Products
                 {
                     ProductName = "Crab Hat",
                     ProductDescription = "Fun crabby hat. ",
-                    UnitPrice = 33.00M
+                    UnitPrice = 33.00M,
+                    Category = context.ProductCategory.First(x => x.Name == "Hats")
                 }
                 );
                 context.SaveChanges();

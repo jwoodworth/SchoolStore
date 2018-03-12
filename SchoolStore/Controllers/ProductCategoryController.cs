@@ -29,7 +29,7 @@ namespace SchoolStore.Controllers
             //ViewData["Color"] = string.Join(",", _context.Products.Select(x =>x.Configurations.))
             //Trouble accessing link between product and product config that has color
 
-            var productcategory = _context.ProductCategory.Include(x => x.Products).SingleOrDefault(m => m.ID == id);
+            var productcategory = _context.ProductCategory.Include(x => x.Products).Include(x => x.ChildCategories).SingleOrDefault(m => m.ID == id);
             if (productcategory == null)
             {
                 return NotFound();
