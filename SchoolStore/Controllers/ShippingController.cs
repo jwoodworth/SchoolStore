@@ -59,15 +59,25 @@ namespace SchoolStore.Controllers
         }
 
         [HttpPost]
-        public IActionResult Update(int quantity, int productID)
+        public IActionResult Update(int quantity, int productID )
         {
+
+
+
             string cartID;
             Guid trackingNumber;
             if (Request.Cookies.TryGetValue("cartID", out cartID) && Guid.TryParse(cartID, out trackingNumber) && _context.Cart.Any(x => x.TrackingNumber == trackingNumber))
             {
-                var cart = _context.Cart.Include(x => x.CartLineItems).ThenInclude(y => y.ProductConfiguration).Single(x => x.TrackingNumber == trackingNumber);
-                //var cartItem = cart.CartLineItems.Single(x => x.ProductConfiguration.ID == productID);
-                var cartItem = cart.CartLineItems.Single(x => x.ProductConfiguration.ID == productID);
+                var c = _context.Cart
+                     .Include(x => x.CartLineItems)
+                     .ThenInclude(y => y.ProductConfiguration)
+                     .ThenInclude(z => z.Product)
+                     .Single(x => x.TrackingNumber == trackingNumber);
+
+                //var cart = _context.Cart.Include(x => x.CartLineItems).ThenInclude(y => y.ProductConfiguration).Single(x => x.TrackingNumber == trackingNumber);
+                var cartItem = c.CartLineItems.Single(x => x.ProductConfiguration.ID == productID);
+                //var cartItem = cart.CartLineItems.FirstOrDefault(x => x.ProductConfiguration.Product.ID == id && x.ProductConfiguration.ColorID == color && x.ProductConfiguration.SizeID == size);
+                
                 cartItem.Quantity = quantity;
 
                 if(cartItem.Quantity == 0)

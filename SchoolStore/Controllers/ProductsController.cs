@@ -20,24 +20,7 @@ namespace SchoolStore.Controllers
             _context = context;
         }
 
-        //public IActionResult List(int? color, int? size, int? category)
-        //{
-        //    IEnumerable<ProductConfiguration> products = _context.ProductConfiguration;
-        //    _context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
-        //    if (color.HasValue)
-        //    {
-        //        products = products.Where(x => x.ColorID == color);
-        //    }
-
-        //    var filteredProducts = _context.Products;
-
-
-        //    return Json(filteredProducts);
-
-            
-        //}
-
-
+ 
         public IActionResult Index(int id = 1)
         {
 

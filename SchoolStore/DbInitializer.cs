@@ -101,6 +101,8 @@ namespace SchoolStore.Models
                     ProductName = "Crab Hat",
                     ProductDescription = "Fun crabby hat. ",
                     UnitPrice = 33.00M,
+                    DateCreated = DateTime.UtcNow,
+                    DateLastModified=DateTime.UtcNow,
                     Category = context.ProductCategory.First(x => x.Name == "Hats")
                 }
                 );
@@ -305,15 +307,15 @@ namespace SchoolStore.Models
                     ColorID = 6,
                     SizeID = 8,
                     Inventory = 10,
-                    ImageURL = "/images/crabbyhat.jpg",
-                    Product = context.Products.SingleOrDefault(x => x.ID == 1)
+                    ImageURL = "/images/crabhat.jpg",
+                    Product = context.Products.SingleOrDefault(x => x.ID == 5)
                 }, new ProductConfiguration
                 {
                     ColorID = 4,
                     SizeID = 6,
                     Inventory = 7,
                     ImageURL = "/images/candycanehat.jpg",
-                    Product = context.Products.SingleOrDefault(x => x.ID == 1)
+                    Product = context.Products.SingleOrDefault(x => x.ID == 5)
                 }
                 );
                 context.SaveChanges();

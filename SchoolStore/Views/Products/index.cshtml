@@ -7,7 +7,8 @@
 <h2>Welcome to The School Store!</h2>
 <div class=row>
     <div class="col-4 image-fluid">
-        <img id="productImage" src="@(Model.Configurations.Any() ? Model.Configurations.First().ImageURL : "noimage.jpg")">
+        <img id="productImage" src="@(Model.Configurations.Any() ? Model.Configurations.FirstOrDefault().ImageURL : "noimage.jpg")">
+        @* <img id="productImage" src="@(Model.Configurations.Any() ? Model.Configurations.First().ImageURL : "noimage.jpg")">*@
         @*<img src="~/schoolstore/images/blackshirt.jpg" />*@
     </div>
     <div class="col-8">

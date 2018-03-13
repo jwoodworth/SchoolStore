@@ -14,33 +14,30 @@
     <div class="col-2">
         <div class="card">
             @*<div class="card-header">Possible Filter By Color</div>*@
-            <div class="card-body">
-                @*
-            <form>
-                @foreach (string color in ((IEnumerable<string>)ViewData["color"]))
-                {
-                    <input type="checkbox" value="@color" name="color" />@color
-                }
-            </form>
-                    
-                *@
-                @foreach(var child in Model.ChildCategories)
-                {
-                    <a asp-route-id="@child.ID">@child.Name</a>
+            if(model.ChildCategories)
+            {
+                <div class="card-body">
+                    @foreach (var child in Model.ChildCategories)
+                    {
+                        <a asp-route-id="@child.ID">@child.Name</a>
+                    }
+                </div>
+            }
 
-                }
-            </div>
         </div>
       </div>
     <div class="col-10">
+    </div>
         <div class="row">
           @foreach (Products product in Model.Products)
             {
             <div class="col-3">
                 <h5>@product.ProductName</h5>
                 <p>@product.ProductDescription</p>
-                <img src="@product.Configurations." />
-                @*how to link image from configuration to view with products model only *@
+                <img src="@(product.Configurations.Any() ? product.Configurations.First().ImageURL : "noimage.jpg")" />
+                @* <img src="@Products. .FirstOrDefault(x => x.ProductConfiguration.Product.ID == ID)" />
+        how to link image from first configuration to view with products model only *@
+
                 <a asp-area="" asp-controller="Products" asp-action="Index" asp-route-id="@product.ID">Configure Product</a>
             </div>
 
