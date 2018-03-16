@@ -12,20 +12,12 @@
 
 <div class="row">
     <div class="col-2">
-        <div class="card">
-            @*<div class="card-header">Possible Filter By Color</div>*@
-            if(model.ChildCategories)
-            {
-                <div class="card-body">
-                    @foreach (var child in Model.ChildCategories)
-                    {
-                        <a asp-route-id="@child.ID">@child.Name</a>
-                    }
-                </div>
-            }
-
-        </div>
-      </div>
+            @*Child Selector for Parent Product Category*@
+                @foreach (var child in Model.ChildCategories)
+                {
+                    <a asp-route-id="@child.ID">@child.Name</a><br />
+                }
+    </div>
     <div class="col-10">
     </div>
         <div class="row">
@@ -34,9 +26,7 @@
             <div class="col-3">
                 <h5>@product.ProductName</h5>
                 <p>@product.ProductDescription</p>
-                <img src="@(product.Configurations.Any() ? product.Configurations.First().ImageURL : "noimage.jpg")" />
-                @* <img src="@Products. .FirstOrDefault(x => x.ProductConfiguration.Product.ID == ID)" />
-        how to link image from first configuration to view with products model only *@
+                <img class="categoryimage" src="@(product.Configurations.Any() ? product.Configurations.First().ImageURL : "noimage.jpg")" />
 
                 <a asp-area="" asp-controller="Products" asp-action="Index" asp-route-id="@product.ID">Configure Product</a>
             </div>
@@ -44,4 +34,3 @@
             }
         </div>
     </div>
- </div>

@@ -1,7 +1,18 @@
 ﻿@model SchoolStore.Models.ShippingViewModel
 @{
     ViewData["Title"] = "Index";
-    var states = (new string[] { "", "Alabama", "Alaska", "Arkansas" }).Select(x => new SelectListItem { Text = x, Value = x });
+    var states = (new string[] { "", "IL", "IN", "IA", "MI", "MN", "WI" }).Select(x => new SelectListItem { Text = x, Value = x });
+    var years = (new string[] {
+"",
+DateTime.Now.Year.ToString(),
+DateTime.Now.AddYears(1).Year.ToString(),
+DateTime.Now.AddYears(2).Year.ToString(),
+DateTime.Now.AddYears(3).Year.ToString(),
+DateTime.Now.AddYears(4).Year.ToString(),
+DateTime.Now.AddYears(5).Year.ToString(),
+DateTime.Now.AddYears(6).Year.ToString(),
+}).Select(x => new SelectListItem { Text = x, Value = x });
+
 }
 <h2>Shipping Information</h2>
 @if (Model.CartLineItem != null)
@@ -19,18 +30,18 @@
             </thead>
             @foreach (var item in Model.CartLineItem)
             {
-            <tr>
-                <td>@item.ProductConfiguration.Product.ProductName</td>
-                <td>@item.ProductConfiguration.Color.Name</td>
-                <td>@item.ProductConfiguration.Size.Name</td> 
-                <td>
-                    <form asp-action="update" asp-controller="shipping" method="post" class="form-inline">
-                        <input name="productId" value="@item.ProductConfiguration.ID" type="hidden" />
-                        <input name="quantity" value="@item.Quantity" type="number" class="form-control-sm" /><input type="submit" value="Update Quantity" class="btn btn-primary" />
-                    </form>
-                </td>
-                <td>@((item.ProductConfiguration.Product.UnitPrice ?? 0m).ToString("c"))</td>
-            </tr>
+                <tr>
+                    <td>@item.ProductConfiguration.Product.ProductName</td>
+                    <td>@item.ProductConfiguration.Color.Name</td>
+                    <td>@item.ProductConfiguration.Size.Name</td>
+                    <td>
+                        <form asp-action="update" asp-controller="shipping" method="post" class="form-inline">
+                            <input name="productId" value="@item.ProductConfiguration.ID" type="hidden" />
+                            <input name="quantity" value="@item.Quantity" type="number" class="form-control-sm" /><input type="submit" value="Update Quantity" class="btn btn-primary" />
+                        </form>
+                    </td>
+                    <td>@((item.ProductConfiguration.Product.UnitPrice ?? 0m).ToString("c"))</td>
+                </tr>
             }
             <tfoot>
                 <tr>
@@ -45,87 +56,149 @@
 {
     <div asp-validation-summary="All" class="alert alert-danger"></div>
 }
-    <form method="post" asp-action="Index" asp-controller="Shipping" novalidate>
-        <div class="form-group">
-            <label asp-for="Address"></label>
-            <input asp-for="Address" class="@(ViewData.ModelState.ContainsKey("Address") && ViewData.ModelState.FirstOrDefault(x => x.Key == "Address").Value.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid ? "form-control is-invalid" : "form-control")" placeholder="address" required />
-            <span class="invalid-feedback">Address is required</span>
-        </div>
-        <div class="form-group">
-            <label asp-for="City"></label>
-            <input asp-for="City" placeholder="city" class="@(ViewData.ModelState.ContainsKey("City") && ViewData.ModelState.FirstOrDefault(x => x.Key == "City").Value.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid ? "form-control is-invalid" : "form-control")" required />
-            <span class="invalid-feedback">City is required</span>
-        </div>
-        <div class="form-group">
-            <label asp-for="State"></label>
-            <select asp-for="State" asp-items="states" required class="@(ViewData.ModelState.ContainsKey("State") && ViewData.ModelState.FirstOrDefault(x => x.Key == "State").Value.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid ? "form-control is-invalid" : "form-control")"></select>
-            <span asp-validation-for="State" class="invalid-feedback"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="ZipCode"></label>
-            <input asp-for="ZipCode" placeholder="zip code" required pattern="^\d{5}(?:[-\s]\d{4})?$" class="@(ViewData.ModelState.ContainsKey("ZipCode") && ViewData.ModelState.FirstOrDefault(x => x.Key == "ZipCode").Value.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid ? "form-control is-invalid" : "form-control")" />
-            <span asp-validation-for="ZipCode" class="invalid-feedback"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="Date"></label>
-            <input asp-for="Date" required class="@(ViewData.ModelState.ContainsKey("Date") && ViewData.ModelState.FirstOrDefault(x => x.Key == "Date").Value.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid ? "form-control is-invalid" : "form-control")" placeholder="Date" />
-            <span asp-validation-for="Date" class="invalid-feedback"></span>
-        </div>
-
-        @*Shipping Address Stuff Above  need to update this information review buttons and messages*@
-
-        <button class="btn btn-light">Verify Shipping Address</button>
-        <div>
-            
-        </div>
-
-        <div class="form-group">
-            <label for="creditcardnumber">Credit Card</label>
-            <input type="text" name="creditcardnumber" class="form-control" required />
-        </div>
-        <div class="form-group">
-            <label for="creditcardname">Name On Card</label>
-            <input type="text" name="creditcardname" class="form-control" required />
-        </div>
-        <div class="form-group">
-            <label for="creditcardverificationvalue">CVV</label>
-            <input type="text" name="creditcardverificationvalue" class="form-control" required />
-        </div>
-        <div class="form-group">
-            <label for="expirationmonth">Expiration</label>
-            <div class="form-row">
-
-            <div class="col">
-                <select name="expirationmonth" class="form-control" required>
-                    <option value="01">01</option>
-                    <option value="02">02</option>
-                    <option value="03">03</option>
-                    <option value="04">04</option>
-                    <option value="05">05</option>
-                    <option value="06">06</option>
-                    <option value="07">07</option>
-                    <option value="08">08</option>
-                    <option value="09">09</option>
-                    <option value="10">10</option>
-                    <option value="11">11</option>
-                    <option value="12">12</option>
-                    <option value="01">01</option>
-                </select>
+<form method="post" asp-action="Index" asp-controller="Shipping" novalidate>
+    <div class="row">
+        <div class="col-4">
+            <div class="form-group">
+                <label asp-for="ShippingAddress"></label>
+                <input asp-for="ShippingAddress" id="ShippingAddress" class="@(ViewData.ModelState.ContainsKey("ShippingAddress") && ViewData.ModelState.FirstOrDefault(x => x.Key == "ShippingAddress").Value.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid ? "form-control is-invalid" : "form-control")" placeholder="shipping address" required />
+                <span class="invalid-feedback">Address Required</span>
             </div>
-            <div class="col">
-                <select name="expirationyear" class="form-control" required>
-                    <option value="2018">2018</option>
-                    <option value="2019">2019</option>
-                    <option value="2020">2020</option>
-                    <option value="2021">2021</option>
-                </select>
+            <div class="form-group">
+                <label asp-for="ShippingCity"></label>
+                <input asp-for="ShippingCity" placeholder="shipping city" id="ShippingCity" class="@(ViewData.ModelState.ContainsKey("ShippingCity") && ViewData.ModelState.FirstOrDefault(x => x.Key == "ShippingCity").Value.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid ? "form-control is-invalid" : "form-control")" required />
+                <span class="invalid-feedback">City Required</span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ShippingState"></label>
+                <select asp-for="ShippingState" asp-items="states" required id="ShippingState"class="@(ViewData.ModelState.ContainsKey("ShippingState") && ViewData.ModelState.FirstOrDefault(x => x.Key == "ShippingState").Value.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid ? "form-control is-invalid" : "form-control")"></select>
+                <span asp-validation-for="ShippingState" class="invalid-feedback"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ShippingZipCode"></label>
+                <input asp-for="ShippingZipCode" placeholder="zip code" required pattern="^\d{5}(?:[-\s]\d{4})?$" class="@(ViewData.ModelState.ContainsKey("ShippingZipCode") && ViewData.ModelState.FirstOrDefault(x => x.Key == "ShippingZipCode").Value.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid ? "form-control is-invalid" : "form-control")" />
+                <span asp-validation-for="ShippingZipCode" class="invalid-feedback"></span>
+            </div>
+         </div>
+        <div class="col-4">
+            <div class="form-group">
+                <label asp-for="BillingAddress"></label>
+                <input asp-for="BillingAddress" class="@(ViewData.ModelState.ContainsKey("BillingAddress") && ViewData.ModelState.FirstOrDefault(x => x.Key == "BillingAddress").Value.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid ? "form-control is-invalid" : "form-control")" placeholder="address" required />
+                <span class="invalid-feedback">Address is required</span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BillingCity"></label>
+                <input asp-for="BillingCity" placeholder="city" class="@(ViewData.ModelState.ContainsKey("BillingCity") && ViewData.ModelState.FirstOrDefault(x => x.Key == "BillingCity").Value.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid ? "form-control is-invalid" : "form-control")" required />
+                <span class="invalid-feedback">City is required</span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BillingState"></label>
+                <select asp-for="BillingState" asp-items="states" required class="@(ViewData.ModelState.ContainsKey("BillingState") && ViewData.ModelState.FirstOrDefault(x => x.Key == "BillingState").Value.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid ? "form-control is-invalid" : "form-control")"></select>
+                <span asp-validation-for="BillingState" class="invalid-feedback"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BillingZipCode"></label>
+                <input asp-for="BillingZipCode" placeholder="zip code" required pattern="^\d{5}(?:[-\s]\d{4})?$" class="@(ViewData.ModelState.ContainsKey("BillingZipCode") && ViewData.ModelState.FirstOrDefault(x => x.Key == "BillingZipCode").Value.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid ? "form-control is-invalid" : "form-control")" />
+                <span asp-validation-for="BillingZipCode" class="invalid-feedback"></span>
+            </div>
+          </div>
+        </div>
+
+            <div class="row">
+                <div class="col-4">
+                    <button class="btn btn-light" id="validateShipping">Verify Shipping Address</button>
+                    <progress id="validating" style="display:none"></progress>
+                </div>
+            <div class="col-4">
+                <div class="alert alert-warning" id="shippingNotValidated">
+                    Not Yet Validated
+                </div>
+                <div class="alert alert-success" id="shippingValid" style="display:none">
+                    Valid
+                </div>
+                <div class="alert alert-danger" id="shippingInvalid" style="display:none">
+                    Invalid
+                </div>
             </div>
         </div>
+
+    <div class="col">
+
+        
     </div>
+    <div class="row">
+        <div class="col">
+            @if (User.Identity.IsAuthenticated)
+            {
+                <input type="hidden" asp-for="Email" />
+            }
+            else
+            {
+                <div class="form-group">
+                    <label asp-for="Email"></label>
+                    <input asp-for="Email" type="email" required class="@(ViewData.ModelState.ContainsKey("Email") && ViewData.ModelState.FirstOrDefault(x => x.Key == "Email").Value.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid ? "form-control is-invalid" : "form-control")" placeholder="Email" />
+                    <span asp-validation-for="Email" class="invalid-feedback"></span>
+                </div>
+            }
 
+            @if (User.Identity.IsAuthenticated)
+            {
+                <div class="oldCard">
+                    <label asp-for="CardToken"></label>
+                    <select asp-for="CardToken" id="CardToken" class="@(ViewData.ModelState.ContainsKey("CardToken") && ViewData.ModelState.FirstOrDefault(x => x.Key == "CardToken").Value.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid ? "form-control is-invalid" : "form-control")">
+                        <option value="">Enter a card below</option>
+                            @foreach (var savedCreditCard in Model.SavedCreditCards)
+                            {
+                                <option value="@savedCreditCard.Token">@savedCreditCard.LastFour</option>
+                            }
+                    </select>
+                </div>
+            }
+                    <div class="newCard">
+                        <div class="form-group">
+                            <label asp-for="CreditCardName"></label>
+                            <input asp-for="CreditCardNumber" placeholder="4111111111111111" class="@(ViewData.ModelState.ContainsKey("CreditCardNumber") && ViewData.ModelState.FirstOrDefault(x => x.Key == "CreditCardNumber").Value.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid ? "form-control is-invalid" : "form-control")" required />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="CreditCardName"></label>
+                            <input asp-for="CreditCardName" placeholder="John Cardholder" class="@(ViewData.ModelState.ContainsKey("CreditCardName") && ViewData.ModelState.FirstOrDefault(x => x.Key == "CreditCardName").Value.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid ? "form-control is-invalid" : "form-control")" required />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="CreditCardVerificationValue"></label>
+                            <input asp-for="CreditCardVerificationValue" placeholder="123" class="@(ViewData.ModelState.ContainsKey("CreditCardVerificationValue") && ViewData.ModelState.FirstOrDefault(x => x.Key == "CreditCardVerificationValue").Value.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid ? "form-control is-invalid" : "form-control")" required />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="ExpirationMonth"></label>
+                            <div class="form-row">
+                                <div class="col">
+                                    <select asp-for="ExpirationMonth" class="@(ViewData.ModelState.ContainsKey("ExpirationMonth") && ViewData.ModelState.FirstOrDefault(x => x.Key == "expirationmonth").Value.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid ? "form-control is-invalid" : "form-control")" required>
+                                        <option value=""></option>
+                                        <option value="01">01</option>
+                                        <option value="02">02</option>
+                                        <option value="03">03</option>
+                                        <option value="04">04</option>
+                                        <option value="05">05</option>
+                                        <option value="06">06</option>
+                                        <option value="07">07</option>
+                                        <option value="08">08</option>
+                                        <option value="09">09</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+                                        <option value="01">01</option>
+                                    </select>
+                                </div>
+                                <div class="col">
+                                    <select asp-for="ExpirationYear" asp-items="years" class="@(ViewData.ModelState.ContainsKey("ExpirationYear") && ViewData.ModelState.FirstOrDefault(x => x.Key == "ExpirationYear").Value.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid ? "form-control is-invalid" : "form-control")" required></select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+        </div>
+  <input type="submit" class="btn btn-dark" />
+</form>
 
-        <input type="submit" class="btn btn-dark" />
-    </form>
 @section Scripts{
     <script type="text/javascript">
         $(document).ready(() => {
@@ -136,10 +209,48 @@
                 }
                 $(event.target).addClass('was-validated');
             })
+
+            $("#validateShipping").click((event) => {
+                $("#validateShipping").prop("disabled", "true");
+                $("#validating").show();
+                event.preventDefault();
+                event.stopPropagation();
+                var shippingAddress = $("#ShippingAddress").val();
+                var shippingCity = $("#ShippingCity").val();
+                var shippingState = $("#ShippingState").val();
+
+                $.getJSON("/shipping/validateaddress?street=" + shippingAddress + "&state=" + shippingState + "&city=" + shippingCity, (data) => {
+                    if (data.length > 0) {
+                        $("#shippingInvalid").hide();
+                        $("#shippingValid").show();
+                    } else {
+                        $("#shippingInvalid").show();
+                        $("#shippingValid").hide();
+                    }
+                    $("#validateShipping").removeProp("disabled");
+                    $("#validating").hide();
+                    console.log(data);
+                })
+                $("#shippingNotValidated").hide();
+
+            })
+
+            $('#CardToken').change((event) => {
+                $('.newCard').find('input, select').prop('disabled', function (i, v) { return !v; });
+                $('.newCard').toggle();
+
+            })
+
+            $('#sameAs').change((event) => {
+                $("#BillingAddress").val($('#ShippingAddress').val());
+                $("#BillingAddress").prop('disabled', 'true');
+            })
         });
 
     </script>
 }
+
 @section AdditionalHead{
-    @* <meta description="This is the shipping page" />*@
+    <meta description="This is the shipping page" />
 }
+

@@ -26,9 +26,6 @@ namespace SchoolStore.Controllers
                 return NotFound();
             }
 
-            //ViewData["Color"] = string.Join(",", _context.Products.Select(x =>x.Configurations.))
-            //Trouble accessing link between product and product config that has color
-
             var productcategory = _context.ProductCategory.Include(x => x.Products).ThenInclude(x => x.Configurations).Include(x => x.ChildCategories).SingleOrDefault(m => m.ID == id);
             if (productcategory == null)
             {

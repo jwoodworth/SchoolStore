@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SchoolStore.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace SchoolStore.Controllers
 {
@@ -13,12 +14,17 @@ namespace SchoolStore.Controllers
 
         private JimTestContext _context;
         private Braintree.BraintreeGateway _braintreeGateway;
+        private SignInManager<ApplicationUser> _signInManager;
         private SmartyStreets.USStreetApi.Client _usStreetClient;
 
-        public ShippingController(JimTestContext context, Braintree.BraintreeGateway braintreeGateway, SmartyStreets.USStreetApi.Client usStreetClient)
+        public ShippingController(JimTestContext context, 
+            Braintree.BraintreeGateway braintreeGateway,
+            SignInManager<ApplicationUser> signInManager,
+            SmartyStreets.USStreetApi.Client usStreetClient)
         {
             _context = context;
             _braintreeGateway = braintreeGateway;
+            _signInManager = signInManager;
             _usStreetClient = usStreetClient;
         }
 
@@ -35,11 +41,41 @@ namespace SchoolStore.Controllers
 
 
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            ShippingViewModel model = new ShippingViewModel();
+
+            
+
+            await SetupViewAsync(model);
+            return View(model);
+        }
+
+        private async Task SetupViewAsync(ShippingViewModel model)
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                Braintree.CustomerSearchRequest customerSearch = new Braintree.CustomerSearchRequest();
+                var user = await _signInManager.UserManager.FindByIdAsync(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value);
+                customerSearch.Email.Is(user.Email);
+
+                //this is the problem line returns null
+                var customers = await _braintreeGateway.Customer.SearchAsync(customerSearch);
+
+                if (customers.Ids.Any())
+                {
+                    var customer = customers.FirstItem;
+                    model.SavedCreditCards = customer.CreditCards.Select(x => new SavedCreditCard { Token = x.Token, LastFour = x.LastFour }).ToArray();
+                }
+                else
+                {
+                    model.SavedCreditCards = new SavedCreditCard[0];
+                }
+
+                model.Email = user.Email;
+            }
             string cartID;
             Guid trackingNumber;
-            ShippingViewModel model = new ShippingViewModel();
             if (Request.Cookies.TryGetValue("cartID", out cartID) && Guid.TryParse(cartID, out trackingNumber) && _context.Cart.Any(x => x.TrackingNumber == trackingNumber))
             {
                 var cart = _context.Cart
@@ -55,15 +91,12 @@ namespace SchoolStore.Controllers
                     .Single(x => x.TrackingNumber == trackingNumber);
                 model.CartLineItem = cart.CartLineItems.ToArray();
             }
-            return View(model);
         }
 
         [HttpPost]
         public IActionResult Update(int quantity, int productID )
         {
-
-
-
+           
             string cartID;
             Guid trackingNumber;
             if (Request.Cookies.TryGetValue("cartID", out cartID) && Guid.TryParse(cartID, out trackingNumber) && _context.Cart.Any(x => x.TrackingNumber == trackingNumber))
@@ -74,9 +107,7 @@ namespace SchoolStore.Controllers
                      .ThenInclude(z => z.Product)
                      .Single(x => x.TrackingNumber == trackingNumber);
 
-                //var cart = _context.Cart.Include(x => x.CartLineItems).ThenInclude(y => y.ProductConfiguration).Single(x => x.TrackingNumber == trackingNumber);
                 var cartItem = c.CartLineItems.Single(x => x.ProductConfiguration.ID == productID);
-                //var cartItem = cart.CartLineItems.FirstOrDefault(x => x.ProductConfiguration.Product.ID == id && x.ProductConfiguration.ColorID == color && x.ProductConfiguration.SizeID == size);
                 
                 cartItem.Quantity = quantity;
 
@@ -92,47 +123,95 @@ namespace SchoolStore.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Index(ShippingViewModel model, string creditcardnumber, string creditcardname, string creditcardverificationvalue, string expirationmonth, string expirationyear)
+        public async Task<IActionResult> Index(ShippingViewModel model)
         {
-            System.Text.RegularExpressions.Regex regex = new System.Text.RegularExpressions.Regex(@"^\d{5}(?:[-\s]\d{4})?$");
-            if (string.IsNullOrEmpty(model.ZipCode) || !regex.IsMatch(model.ZipCode))
-            {
-                ModelState.AddModelError("ZipCode", "This zip code is not valid");
-            }
 
+            await SetupViewAsync(model);
+            System.Text.RegularExpressions.Regex regex = new System.Text.RegularExpressions.Regex(@"^\d{5}(?:[-\s]\d{4})?$");
+            if (string.IsNullOrEmpty(model.ShippingZipCode) || !regex.IsMatch(model.ShippingZipCode))
+            {
+                ModelState.AddModelError("ZipCode", "Invalid ZipCode");
+            }
+            
             if (ModelState.IsValid)
             {
-                Braintree.TransactionRequest saleRequest = new Braintree.TransactionRequest();
-                saleRequest.Amount = 10;    //Hard-coded for now
-                saleRequest.CreditCard = new Braintree.TransactionCreditCardRequest
+                Braintree.CustomerSearchRequest customerSearch = new Braintree.CustomerSearchRequest();
+                customerSearch.Email.Is(model.Email);
+                Braintree.Customer customer = null;
+                var customers = await _braintreeGateway.Customer.SearchAsync(customerSearch);
+                if (customers.Ids.Any())
                 {
-                    CardholderName = creditcardname,
-                    CVV = creditcardverificationvalue,
-                    ExpirationMonth = expirationmonth,
-                    ExpirationYear = expirationyear,
-                    Number = creditcardnumber
+                    customer = customers.FirstItem;
+                }
+                else
+                {
+                    Braintree.CustomerRequest newCustomer = new Braintree.CustomerRequest
+                    {
+                        Email = model.Email
+                    };
+                    var creationResult = await _braintreeGateway.Customer.CreateAsync(newCustomer);
+                    customer = creationResult.Target;
+                }
+                if (string.IsNullOrEmpty(model.CardToken))
+                {
+                    Braintree.CreditCard card = null;
+                    if (customer.CreditCards.Any())
+                    {
+                        string lastFour = new string(model.CreditCardNumber.Skip(model.CreditCardNumber.Length - 4).ToArray());
+
+                        card = customer.CreditCards.FirstOrDefault(
+                            x => x.ExpirationMonth == model.ExpirationMonth &&
+                            x.ExpirationYear == model.ExpirationYear &&
+                            x.LastFour == lastFour);
+                    }
+                    if (card == null)
+                    {
+                        Braintree.CreditCardRequest newCard = new Braintree.CreditCardRequest
+                        {
+                            CustomerId = customer.Id,
+                            CardholderName = model.CreditCardName,
+                            CVV = model.CreditCardVerificationValue,
+                            ExpirationMonth = model.ExpirationMonth,
+                            ExpirationYear = model.ExpirationYear,
+                            Number = model.CreditCardNumber
+                        };
+                        var creationResult = await _braintreeGateway.CreditCard.CreateAsync(newCard);
+                        card = creationResult.Target;
+                        model.CardToken = card.Token;
+                    }
+                }
+
+                Braintree.TransactionRequest saleRequest = new Braintree.TransactionRequest();
+                saleRequest.Amount = model.CartLineItem.Sum(x => (x.ProductConfiguration.Product.UnitPrice * x.Quantity ?? .99m));
+
+                saleRequest.CustomerId = customer.Id;
+                saleRequest.PaymentMethodToken = model.CardToken;
+                saleRequest.BillingAddress = new Braintree.AddressRequest
+                {
+                    StreetAddress = model.BillingAddress,
+                    PostalCode = model.BillingZipCode,
+                    Region = model.BillingState,
+                    Locality = model.BillingCity,
+                    CountryName = "United States of America",
+                    CountryCodeAlpha2 = "US",
+                    CountryCodeAlpha3 = "USA",
+                    CountryCodeNumeric = "840"
                 };
+
                 var result = await _braintreeGateway.Transaction.SaleAsync(saleRequest);
                 if (result.IsSuccess())
                 {
-                    //pull in cart info form class
-
-
-
-
-
-                    //If model state is valid, proceed to the next step.
-                    return this.RedirectToAction("Index", "Home");  //got to order complete page
+                    //If model state is valid convert to order and show reciept
+                    return this.RedirectToAction("Index", "Home");
                 }
+
                 foreach (var error in result.Errors.All())
                 {
                     ModelState.AddModelError(error.Code.ToString(), error.Message);
                 }
+
             }
-            return View();
+            return View(model);
         }
-
-
-
     }
 }
