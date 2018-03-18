@@ -1,5 +1,11 @@
 ﻿body {
 
+
+}
+
+
+.genpage {
+    margin-left: 1.5em;
 }
 
 .categoryimage {
@@ -9,6 +15,11 @@
     width: 50%;
 }
 
+/*Trying to use this to reset the cards to line up wih Jumbotron*/
+div.row.prodcatcard {
+    margin-left: -5px;
+}
+   
 
 /* Wrapping element */
 /* Set some basic padding to keep content from hitting the edges */

@@ -5,32 +5,38 @@
     ViewData["Title"] = Model.Name;
 }
 
+<div class="container">
+    <div class="jumbotron" style="background-image:url(@Model.CategoryImage); background-size:cover; background-position-y: -80px; color:lightgrey">
+        <h2>@Html.DisplayFor(model => model.Name)</h2>
+    </div>
 
-<div class="jumbotron" style="background-image:url(@Model.CategoryImage); background-size:cover; background-position-y: -80px; color:lightgrey">
-    <h2>@Html.DisplayFor(model =>model.Name)</h2>
-</div>
-
-<div class="row">
-    <div class="col-2">
-            @*Child Selector for Parent Product Category*@
+    <div class="row prodcatcard">
+        @if (Model.ChildCategories.Any())
+        {
+            <div class="col-2">
+                @*Child Selector for Parent Product Category*@
                 @foreach (var child in Model.ChildCategories)
                 {
                     <a asp-route-id="@child.ID">@child.Name</a><br />
                 }
-    </div>
-    <div class="col-10">
-    </div>
-        <div class="row">
-          @foreach (Products product in Model.Products)
-            {
-            <div class="col-3">
-                <h5>@product.ProductName</h5>
-                <p>@product.ProductDescription</p>
-                <img class="categoryimage" src="@(product.Configurations.Any() ? product.Configurations.First().ImageURL : "noimage.jpg")" />
-
-                <a asp-area="" asp-controller="Products" asp-action="Index" asp-route-id="@product.ID">Configure Product</a>
             </div>
+        }
 
-            }
+
+        <div class="col-10">
+            <div class="row">
+                @foreach (Products product in Model.Products)
+                {
+                    <div class="card border-light mb-3" style="max-width: 20rem;">
+                        <div class="card-header">@product.ProductName</div>
+                        <div class="card-body">
+                            <h6 class="card-title">@product.ProductDescription</h6>
+                            <p class="card-text"><img class="categoryimage" src="@(product.Configurations.Any() ? product.Configurations.First().ImageURL : "noimage.jpg")" /></p>
+                            <a asp-area="" asp-controller="Products" asp-action="Index" asp-route-id="@product.ID">Configure Product</a>
+                        </div>
+                    </div>
+                }
+            </div>
         </div>
     </div>
+</div>

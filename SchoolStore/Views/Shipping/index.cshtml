@@ -14,7 +14,7 @@ DateTime.Now.AddYears(6).Year.ToString(),
 }).Select(x => new SelectListItem { Text = x, Value = x });
 
 }
-<h2>Shipping Information</h2>
+<h2>Cart and Shipping Information</h2>
 @if (Model.CartLineItem != null)
 {
     <div class="row">
@@ -37,7 +37,7 @@ DateTime.Now.AddYears(6).Year.ToString(),
                     <td>
                         <form asp-action="update" asp-controller="shipping" method="post" class="form-inline">
                             <input name="productId" value="@item.ProductConfiguration.ID" type="hidden" />
-                            <input name="quantity" value="@item.Quantity" type="number" class="form-control-sm" /><input type="submit" value="Update Quantity" class="btn btn-primary" />
+                            <input name="quantity" value="@item.Quantity" type="number" class="form-control-sm" /><input type="submit" value="Update Quantity" class="btn btn-primary btn-sm" />
                         </form>
                     </td>
                     <td>@((item.ProductConfiguration.Product.UnitPrice ?? 0m).ToString("c"))</td>
@@ -127,7 +127,7 @@ DateTime.Now.AddYears(6).Year.ToString(),
         
     </div>
     <div class="row">
-        <div class="col">
+        <div class="col-4">
             @if (User.Identity.IsAuthenticated)
             {
                 <input type="hidden" asp-for="Email" />
@@ -144,58 +144,58 @@ DateTime.Now.AddYears(6).Year.ToString(),
             @if (User.Identity.IsAuthenticated)
             {
                 <div class="oldCard">
-                    <label asp-for="CardToken"></label>
+                <label asp-for="CardToken"></label>
                     <select asp-for="CardToken" id="CardToken" class="@(ViewData.ModelState.ContainsKey("CardToken") && ViewData.ModelState.FirstOrDefault(x => x.Key == "CardToken").Value.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid ? "form-control is-invalid" : "form-control")">
                         <option value="">Enter a card below</option>
-                            @foreach (var savedCreditCard in Model.SavedCreditCards)
-                            {
-                                <option value="@savedCreditCard.Token">@savedCreditCard.LastFour</option>
-                            }
+                        @foreach (var savedCreditCard in Model.SavedCreditCards)
+                        {
+                            <option value="@savedCreditCard.Token">@savedCreditCard.LastFour</option>
+                        }
                     </select>
                 </div>
             }
-                    <div class="newCard">
-                        <div class="form-group">
-                            <label asp-for="CreditCardName"></label>
-                            <input asp-for="CreditCardNumber" placeholder="4111111111111111" class="@(ViewData.ModelState.ContainsKey("CreditCardNumber") && ViewData.ModelState.FirstOrDefault(x => x.Key == "CreditCardNumber").Value.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid ? "form-control is-invalid" : "form-control")" required />
+                <div class="newCard">
+                    <div class="form-group">
+                        <label asp-for="CreditCardName"></label>
+                        <input asp-for="CreditCardNumber" placeholder="4111111111111111" class="@(ViewData.ModelState.ContainsKey("CreditCardNumber") && ViewData.ModelState.FirstOrDefault(x => x.Key == "CreditCardNumber").Value.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid ? "form-control is-invalid" : "form-control")" required />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="CreditCardName"></label>
+                        <input asp-for="CreditCardName" placeholder="John Cardholder" class="@(ViewData.ModelState.ContainsKey("CreditCardName") && ViewData.ModelState.FirstOrDefault(x => x.Key == "CreditCardName").Value.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid ? "form-control is-invalid" : "form-control")" required />
+                    </div>
+                <div class="form-group">
+                    <label asp-for="CreditCardVerificationValue"></label>
+                    <input asp-for="CreditCardVerificationValue" placeholder="123" class="@(ViewData.ModelState.ContainsKey("CreditCardVerificationValue") && ViewData.ModelState.FirstOrDefault(x => x.Key == "CreditCardVerificationValue").Value.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid ? "form-control is-invalid" : "form-control")" required />
+                </div>
+                <div class="form-group">
+                    <label asp-for="ExpirationMonth"></label>
+                    <div class="form-row">
+                        <div class="col">
+                            <select asp-for="ExpirationMonth" class="@(ViewData.ModelState.ContainsKey("ExpirationMonth") && ViewData.ModelState.FirstOrDefault(x => x.Key == "expirationmonth").Value.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid ? "form-control is-invalid" : "form-control")" required>
+                                <option value=""></option>
+                                <option value="01">01</option>
+                                <option value="02">02</option>
+                                <option value="03">03</option>
+                                <option value="04">04</option>
+                                <option value="05">05</option>
+                                <option value="06">06</option>
+                                <option value="07">07</option>
+                                <option value="08">08</option>
+                                <option value="09">09</option>
+                                <option value="10">10</option>
+                                <option value="11">11</option>
+                                <option value="12">12</option>
+                                <option value="01">01</option>
+                            </select>
                         </div>
-                        <div class="form-group">
-                            <label asp-for="CreditCardName"></label>
-                            <input asp-for="CreditCardName" placeholder="John Cardholder" class="@(ViewData.ModelState.ContainsKey("CreditCardName") && ViewData.ModelState.FirstOrDefault(x => x.Key == "CreditCardName").Value.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid ? "form-control is-invalid" : "form-control")" required />
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="CreditCardVerificationValue"></label>
-                            <input asp-for="CreditCardVerificationValue" placeholder="123" class="@(ViewData.ModelState.ContainsKey("CreditCardVerificationValue") && ViewData.ModelState.FirstOrDefault(x => x.Key == "CreditCardVerificationValue").Value.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid ? "form-control is-invalid" : "form-control")" required />
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="ExpirationMonth"></label>
-                            <div class="form-row">
-                                <div class="col">
-                                    <select asp-for="ExpirationMonth" class="@(ViewData.ModelState.ContainsKey("ExpirationMonth") && ViewData.ModelState.FirstOrDefault(x => x.Key == "expirationmonth").Value.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid ? "form-control is-invalid" : "form-control")" required>
-                                        <option value=""></option>
-                                        <option value="01">01</option>
-                                        <option value="02">02</option>
-                                        <option value="03">03</option>
-                                        <option value="04">04</option>
-                                        <option value="05">05</option>
-                                        <option value="06">06</option>
-                                        <option value="07">07</option>
-                                        <option value="08">08</option>
-                                        <option value="09">09</option>
-                                        <option value="10">10</option>
-                                        <option value="11">11</option>
-                                        <option value="12">12</option>
-                                        <option value="01">01</option>
-                                    </select>
-                                </div>
-                                <div class="col">
-                                    <select asp-for="ExpirationYear" asp-items="years" class="@(ViewData.ModelState.ContainsKey("ExpirationYear") && ViewData.ModelState.FirstOrDefault(x => x.Key == "ExpirationYear").Value.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid ? "form-control is-invalid" : "form-control")" required></select>
-                                </div>
-                            </div>
+                        <div class="col">
+                            <select asp-for="ExpirationYear" asp-items="years" class="@(ViewData.ModelState.ContainsKey("ExpirationYear") && ViewData.ModelState.FirstOrDefault(x => x.Key == "ExpirationYear").Value.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid ? "form-control is-invalid" : "form-control")" required></select>
                         </div>
                     </div>
+                </div>
             </div>
         </div>
+    </div>
   <input type="submit" class="btn btn-dark" />
 </form>
 

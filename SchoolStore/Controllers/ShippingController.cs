@@ -202,7 +202,7 @@ namespace SchoolStore.Controllers
                 if (result.IsSuccess())
                 {
                     //If model state is valid convert to order and show reciept
-                    return this.RedirectToAction("Index", "Home");
+                    return this.RedirectToAction("Index", "Receipt");
                 }
 
                 foreach (var error in result.Errors.All())
